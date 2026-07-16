@@ -80,11 +80,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Zainab Polymer Consulting Services — Engr. Neaz Ahmed" },
       { name: "description", content: "Polyolefin technology and plastics manufacturing consultancy. Decades of research, industrial expertise, and international exposure led by Engr. Neaz Ahmed." },
       { name: "author", content: "Engr. Neaz Ahmed" },
-      { property: "og:title", content: "Zainab Polymer Consulting Services" },
-      { property: "og:description", content: "Polyolefin technology and plastics manufacturing consultancy led by Engr. Neaz Ahmed." },
+      { property: "og:title", content: "Zainab Polymer Consulting Services — Engr. Neaz Ahmed" },
+      { property: "og:description", content: "Polyolefin technology and plastics manufacturing consultancy. Decades of research, industrial expertise, and international exposure led by Engr. Neaz Ahmed." },
       { property: "og:site_name", content: "Zainab Polymer Consulting Services" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Zainab Polymer Consulting Services — Engr. Neaz Ahmed" },
+      { name: "twitter:description", content: "Polyolefin technology and plastics manufacturing consultancy. Decades of research, industrial expertise, and international exposure led by Engr. Neaz Ahmed." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d0778d15-2f5d-41fd-86b9-0d50481d146f/id-preview-6a085f4f--48be19c1-450e-47ca-9fd4-e4cc568e7e47.lovable.app-1784177180132.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d0778d15-2f5d-41fd-86b9-0d50481d146f/id-preview-6a085f4f--48be19c1-450e-47ca-9fd4-e4cc568e7e47.lovable.app-1784177180132.png" },
     ],
     links: [
       {
