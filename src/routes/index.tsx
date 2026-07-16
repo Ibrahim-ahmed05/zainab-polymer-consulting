@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Beaker, Cog, Lightbulb } from "lucide-react";
+import { ArrowUpRight, Award, Beaker, Cog, GraduationCap, Lightbulb } from "lucide-react";
 import heroPlant from "@/assets/hero-plant.jpg";
 import pellets from "@/assets/pellets.jpg";
 import lab from "@/assets/lab.jpg";
@@ -9,6 +9,10 @@ import consultant from "@/assets/founder.png";
 import films from "@/assets/films.jpg";
 import conference from "@/assets/conference.jpg";
 import engel from "@/assets/engel-tradeshow.jpg";
+import thermoformingChain from "@/assets/thermoforming-chain.png";
+import techExtrusion from "@/assets/tech-extrusion.png";
+import mwdCurves from "@/assets/mwd-curves.png";
+import fiberTech from "@/assets/fiber-tech.png";
 
 export const Route = createFileRoute("/")({
   component: Index,
