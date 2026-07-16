@@ -176,13 +176,16 @@ const CONFERENCES = [
   { y: "2007", items: ["K-Show, Düsseldorf — Germany", "Chemindix, Manama — Bahrain"] },
 ];
 
-const HONORS = [
-  "Life Member — Pakistan Engineering Council",
-  "Member — Saudi Council of Engineers",
-  "Research Assistantship — M.S., KFUPM",
-  "University Scholarship — B.E., N.E.D. University",
-  "Government of Pakistan Scholarship — Higher Secondary",
-  "Merit Scholarship — Comilla Zila School",
+const HONORS_MEMBERSHIPS = [
+  { t: "Life Member", org: "Pakistan Engineering Council", note: "Chartered professional standing" },
+  { t: "Member", org: "Saudi Council of Engineers", note: "Registered engineering practitioner — KSA" },
+];
+
+const HONORS_ACADEMIC = [
+  { t: "Research Assistantship", org: "M.S., King Fahd University of Petroleum and Minerals", note: "Awarded on academic merit" },
+  { t: "University Scholarship", org: "B.E., N.E.D. University of Engineering & Technology", note: "Undergraduate merit award" },
+  { t: "Government of Pakistan Scholarship", org: "Higher Secondary", note: "National merit scholarship" },
+  { t: "Merit Scholarship", org: "Comilla Zila School", note: "Early-career academic distinction" },
 ];
 
 const TIMELINE = [
