@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { ArrowUpRight, Beaker, Cog, Lightbulb } from "lucide-react";
 import heroPlant from "@/assets/hero-plant.jpg";
 import pellets from "@/assets/pellets.jpg";
 import lab from "@/assets/lab.jpg";
 import extrusion from "@/assets/extrusion.jpg";
-import consultant from "@/assets/consultant.jpg";
+import consultant from "@/assets/founder.png";
 import films from "@/assets/films.jpg";
 import conference from "@/assets/conference.jpg";
 import engel from "@/assets/engel-tradeshow.jpg";
@@ -85,22 +86,46 @@ const NAV = [
   { id: "contact", label: "Contact" },
 ];
 
-const EXPERTISE = [
-  { t: "Polymer Science", d: "Structure–property correlation, morphology, and performance analysis across PE and PP systems." },
-  { t: "Polyolefin Technology", d: "PE and PP synthesis, copolymer design, and process optimization from lab to plant." },
-  { t: "Polymerization", d: "Reaction design, kinetics, and scale-up support from bench to commercial production." },
-  { t: "Catalyst Selection", d: "Ziegler-Natta and metallocene systems tailored to product architecture and throughput." },
-  { t: "Stabilization", d: "Antioxidant packages, UV protection, and tailored formulations for demanding service life." },
-  { t: "Degradation Analysis", d: "Thermal, photo-oxidative, and mechanical degradation studies with lifetime prediction." },
-  { t: "Injection Molding", d: "Process optimization, defect analysis, mold design guidance, and cycle refinement." },
-  { t: "Extrusion", d: "Profile, film, and pipe extrusion troubleshooting, screw design and process scaling." },
-  { t: "Machine Selection", d: "Objective specification and cost–profit modelling for capital equipment decisions." },
-  { t: "Material Formulation", d: "Compound and blend engineering for targeted mechanical and processing outcomes." },
-  { t: "Product Development", d: "End-to-end development from resin selection through prototype validation." },
-  { t: "Failure Analysis", d: "Root-cause investigation of field failures backed by laboratory evidence." },
-  { t: "Training & Workshops", d: "Structured programs for engineering teams on polymer processing and reliability." },
-  { t: "Scale-up Support", d: "De-risked transition from R&D trials to steady-state commercial operation." },
-];
+const EXPERTISE_PILLARS = [
+  {
+    id: "science",
+    label: "Materials & Science",
+    summary: "Structure, formulation, and performance from molecular scale to commercial resin.",
+    icon: Beaker,
+    items: [
+      { t: "Polymer Science", d: "Structure–property correlation, morphology, and performance analysis across PE and PP systems." },
+      { t: "Polyolefin Technology", d: "PE and PP synthesis, copolymer design, and process optimization from lab to plant." },
+      { t: "Polymerization", d: "Reaction design, kinetics, and scale-up support from bench to commercial production." },
+      { t: "Catalyst Selection", d: "Ziegler-Natta and metallocene systems tailored to product architecture and throughput." },
+      { t: "Material Formulation", d: "Compound and blend engineering for targeted mechanical and processing outcomes." },
+    ],
+  },
+  {
+    id: "manufacturing",
+    label: "Manufacturing & Process",
+    summary: "Plant-floor optimization across molding, extrusion, and equipment selection.",
+    icon: Cog,
+    items: [
+      { t: "Stabilization", d: "Antioxidant packages, UV protection, and tailored formulations for demanding service life." },
+      { t: "Degradation Analysis", d: "Thermal, photo-oxidative, and mechanical degradation studies with lifetime prediction." },
+      { t: "Injection Molding", d: "Process optimization, defect analysis, mold design guidance, and cycle refinement." },
+      { t: "Extrusion", d: "Profile, film, and pipe extrusion troubleshooting, screw design and process scaling." },
+      { t: "Machine Selection", d: "Objective specification and cost–profit modelling for capital equipment decisions." },
+    ],
+  },
+  {
+    id: "advisory",
+    label: "Advisory & Development",
+    summary: "End-to-end product development, failure investigation, and knowledge transfer.",
+    icon: Lightbulb,
+    items: [
+      { t: "Product Development", d: "End-to-end development from resin selection through prototype validation." },
+      { t: "Failure Analysis", d: "Root-cause investigation of field failures backed by laboratory evidence." },
+      { t: "Training & Workshops", d: "Structured programs for engineering teams on polymer processing and reliability." },
+      { t: "Scale-up Support", d: "De-risked transition from R&D trials to steady-state commercial operation." },
+    ],
+  },
+] as const;
 
 const INDUSTRIES = [
   { t: "Research & Development", img: lab },
@@ -260,9 +285,9 @@ function Index() {
               <span className="h-px w-10 bg-gold/70" />
               <span className="eyebrow text-white/70">Est. 1993 · Global Practice</span>
             </div>
-            <h1 className="font-display text-[42px] leading-[1.05] md:text-[68px] lg:text-[84px] font-light tracking-tight">
+            <h1 className="font-display text-[42px] leading-[1.08] md:text-[64px] lg:text-[76px] font-normal tracking-tight">
               Polyolefin technology<br />and plastics manufacturing<br />
-              <span className="italic text-white/85">consultancy.</span>
+              <span className="text-gold">consultancy.</span>
             </h1>
             <p className="mt-10 max-w-2xl text-[17px] leading-relaxed text-white/75">
               Helping manufacturers improve polymer performance, production efficiency, product quality and long-term
@@ -288,7 +313,7 @@ function Index() {
                 { n: 8, s: "", l: "Countries of practice" },
               ].map((k) => (
                 <div key={k.l}>
-                  <div className="font-display text-5xl font-light tabular-nums">
+                  <div className="font-display text-5xl font-normal tabular-nums">
                     <Counter to={k.n} suffix={k.s} />
                   </div>
                   <div className="mt-2 text-[11px] tracking-[0.22em] uppercase text-white/60">{k.l}</div>
@@ -367,20 +392,7 @@ function Index() {
 
       {/* EXPERTISE */}
       <Section id="expertise" dark eyebrow="02 — Expertise" title="Deep specialization across the polyolefin value chain.">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 border border-white/10">
-          {EXPERTISE.map((e, i) => (
-            <div key={e.t} className="group bg-navy-deep p-8 lift-card border border-transparent reveal" style={{ transitionDelay: `${(i % 3) * 60}ms` }}>
-              <div className="flex items-start justify-between">
-                <div className="text-white/40 font-display text-sm tabular-nums">{String(i + 1).padStart(2, "0")}</div>
-                <div className="h-6 w-6 border border-white/25 grid place-items-center text-white/50 group-hover:border-gold group-hover:text-gold transition-colors">
-                  <span className="text-[10px]">→</span>
-                </div>
-              </div>
-              <h3 className="mt-8 font-display text-2xl text-white">{e.t}</h3>
-              <p className="mt-3 text-[13.5px] leading-[1.7] text-white/60">{e.d}</p>
-            </div>
-          ))}
-        </div>
+        <ExpertiseSection />
       </Section>
 
       {/* INDUSTRIES */}
@@ -637,7 +649,7 @@ function Index() {
         <div className="container-x py-16 grid md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
             <div className="flex items-center gap-3">
-              <span className="h-8 w-8 grid place-items-center bg-white text-navy-deep font-display text-sm font-semibold">Z</span>
+              {/* <span className="h-8 w-8 grid place-items-center bg-white text-navy-deep font-display text-sm font-semibold">Z</span> */}
               <span className="font-display text-white text-lg">Zainab Polymer Consulting Services</span>
             </div>
             <p className="mt-5 max-w-md text-[13.5px] leading-[1.8]">
@@ -680,6 +692,116 @@ function Index() {
 
 /* ----------------------------- sub-components ----------------------------- */
 
+function ExpertiseSection() {
+  return (
+    <div className="relative expertise-grid-bg rounded-sm border border-white/10 p-6 md:p-10 lg:p-12">
+      <div className="grid lg:grid-cols-3 gap-8 lg:gap-6 xl:gap-10">
+        {EXPERTISE_PILLARS.map((pillar, pillarIdx) => {
+          const Icon = pillar.icon;
+          return (
+            <div
+              key={pillar.id}
+              className="expertise-pillar flex flex-col reveal"
+              style={{ transitionDelay: `${pillarIdx * 120}ms` }}
+            >
+              {/* Pillar header */}
+              <div className="mb-8 pb-8 border-b border-white/10">
+                <div className="flex items-start gap-4">
+                  <div className="expertise-icon shrink-0 h-12 w-12 rounded-sm border border-white/15 bg-white/5 grid place-items-center text-gold">
+                    <Icon size={22} strokeWidth={1.5} />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-[11px] tracking-[0.28em] uppercase text-white/45 font-medium">
+                      Pillar {String(pillarIdx + 1).padStart(2, "0")}
+                    </div>
+                    <h3 className="mt-2 font-display text-2xl text-white leading-tight">{pillar.label}</h3>
+                  </div>
+                </div>
+                <p className="mt-4 text-[14px] leading-relaxed text-white/55">{pillar.summary}</p>
+                <div className="mt-5 flex items-center gap-3">
+                  <span className="h-px flex-1 bg-gradient-to-r from-gold/60 to-transparent" />
+                  <span className="text-[11px] tracking-[0.2em] uppercase text-white/40 tabular-nums">
+                    {pillar.items.length} disciplines
+                  </span>
+                </div>
+              </div>
+
+              {/* Cards */}
+              <div className="flex flex-col gap-3 flex-1">
+                {pillar.items.map((item, itemIdx) => (
+                  <div
+                    key={item.t}
+                    className="group expertise-card rounded-sm p-5 md:p-6 reveal"
+                    style={{ transitionDelay: `${pillarIdx * 120 + itemIdx * 50}ms` }}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-3">
+                          <span className="text-[11px] tracking-[0.2em] uppercase text-white/35 tabular-nums font-medium">
+                            {String(itemIdx + 1).padStart(2, "0")}
+                          </span>
+                          <span className="h-px w-4 bg-white/15 transition-all duration-500 group-hover:w-8 group-hover:bg-gold/50" />
+                        </div>
+                        <h4 className="mt-3 font-display text-[19px] md:text-xl text-white leading-snug group-hover:text-white transition-colors">
+                          {item.t}
+                        </h4>
+                        <p className="mt-2.5 text-[13.5px] leading-[1.65] text-white/55 group-hover:text-white/70 transition-colors duration-500">
+                          {item.d}
+                        </p>
+                      </div>
+                      <div className="expertise-icon shrink-0 mt-1 h-8 w-8 rounded-sm border border-white/10 bg-white/5 grid place-items-center text-white/40 group-hover:border-gold/40 group-hover:bg-gold/10 group-hover:text-gold group-hover:scale-110 group-hover:-rotate-3">
+                        <ArrowUpRight size={14} strokeWidth={1.75} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {pillar.id === "advisory" && (
+                  <a
+                    href="#contact"
+                    className="group expertise-card rounded-sm p-5 md:p-6 flex-1 flex flex-col justify-center reveal border-dashed"
+                    style={{ transitionDelay: `${pillarIdx * 120 + pillar.items.length * 50}ms` }}
+                  >
+                    <div className="text-[11px] tracking-[0.2em] uppercase text-gold/80 font-medium">Custom scope</div>
+                    <p className="mt-3 font-display text-lg text-white leading-snug">
+                      Every engagement is tailored to your product and process.
+                    </p>
+                    <div className="mt-4 inline-flex items-center gap-2 text-[12px] tracking-[0.15em] uppercase text-white/60 group-hover:text-gold transition-colors">
+                      Start a conversation
+                      <ArrowUpRight size={13} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </div>
+                  </a>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Bottom CTA strip */}
+      <div className="mt-10 pt-8 border-t border-white/10 reveal" style={{ transitionDelay: "420ms" }}>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div>
+            <p className="font-display text-xl md:text-2xl text-white leading-snug">
+              Fourteen disciplines. One integrated practice.
+            </p>
+            <p className="mt-2 text-[14px] text-white/50 max-w-xl">
+              Engagements are scoped to your product, process, and commercial objectives — from single-issue troubleshooting to full program support.
+            </p>
+          </div>
+          <a
+            href="#contact"
+            className="group inline-flex shrink-0 items-center gap-3 bg-gold text-navy-deep px-7 py-4 text-[12px] tracking-[0.18em] uppercase font-semibold hover:bg-white transition-all duration-300"
+          >
+            Discuss your challenge
+            <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Section({
   id, eyebrow: eye, title, children, dark, muted,
 }: { id: string; eyebrow: string; title: string; children: React.ReactNode; dark?: boolean; muted?: boolean }) {
@@ -697,7 +819,7 @@ function Section({
             <div className={"eyebrow " + (dark ? "text-white/60" : "")}>{eye}</div>
           </div>
           <div className="lg:col-span-7">
-            <h2 className={"font-display text-3xl md:text-5xl lg:text-[54px] font-light leading-[1.08] tracking-tight " + (dark ? "text-white" : "text-ink")}>
+            <h2 className={"font-display text-3xl md:text-[44px] lg:text-[52px] font-normal leading-[1.1] tracking-tight " + (dark ? "text-white" : "text-ink")}>
               {title}
             </h2>
           </div>
