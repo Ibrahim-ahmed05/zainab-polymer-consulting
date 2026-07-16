@@ -454,7 +454,66 @@ function Index() {
       </Section>
 
       {/* ENERGY MEASUREMENT */}
-      <Section id="energy" eyebrow="05 — Energy Measurement" title="Turning power data into process decisions.">
+      {/* TECHNOLOGY DIAGRAMS */}
+      <Section id="technology" dark eyebrow="05 — Technology" title="From resin architecture to converted product.">
+        <p className="max-w-3xl text-[15px] leading-[1.85] text-white/70 -mt-4 mb-14">
+          A working library of the process diagrams, molecular architectures and fibre technologies our engagements
+          routinely address — drawn from three decades of plant work across polyolefin producers and converters.
+        </p>
+
+        <div className="grid lg:grid-cols-12 gap-8">
+          {/* Value chain — full width */}
+          <figure className="lg:col-span-12 reveal group">
+            <div className="relative overflow-hidden border border-white/10 bg-white">
+              <img src={thermoformingChain} alt="Thermoforming value chain from resin supplier to consumer" className="w-full h-auto object-contain" loading="lazy" />
+            </div>
+            <figcaption className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-white/75">
+              <span className="eyebrow text-white/50">Fig. 01</span>
+              <span className="font-display text-lg text-white">Thermoforming Value Chain</span>
+              <span className="text-[13px] text-white/60">PP supplier · sheet extrusion · thermoforming · packaging · end-user</span>
+            </figcaption>
+          </figure>
+
+          {/* Extrusion technology */}
+          <figure className="lg:col-span-7 reveal group">
+            <div className="relative overflow-hidden border border-white/10 bg-white">
+              <img src={techExtrusion} alt="Extrusion schematic with feed pipe, die, breaker plate, barrel, screw, hopper and screw drive motor" className="w-full h-auto object-contain" loading="lazy" />
+            </div>
+            <figcaption className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-white/75">
+              <span className="eyebrow text-white/50">Fig. 02</span>
+              <span className="font-display text-lg text-white">Extrusion — Screw & Die Architecture</span>
+              <span className="text-[13px] text-white/60">Blown film · cast film · downstream converting</span>
+            </figcaption>
+          </figure>
+
+          {/* MWD curves */}
+          <figure className="lg:col-span-5 reveal group">
+            <div className="relative overflow-hidden border border-white/10 bg-white">
+              <img src={mwdCurves} alt="Molecular weight distribution curves — monomodal broad, monomodal narrow, bimodal broad" className="w-full h-auto object-contain" loading="lazy" />
+            </div>
+            <figcaption className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-white/75">
+              <span className="eyebrow text-white/50">Fig. 03</span>
+              <span className="font-display text-lg text-white">Molecular Weight Distribution</span>
+              <span className="text-[13px] text-white/60">Monomodal vs. bimodal grade selection</span>
+            </figcaption>
+          </figure>
+
+          {/* Fiber technology */}
+          <figure className="lg:col-span-12 reveal group">
+            <div className="relative overflow-hidden border border-white/10 bg-white">
+              <img src={fiberTech} alt="BCF, CF spinneret packs, quench cabinet and melt-blown fibre extrusion technologies" className="w-full h-auto object-contain" loading="lazy" />
+            </div>
+            <figcaption className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-white/75">
+              <span className="eyebrow text-white/50">Fig. 04</span>
+              <span className="font-display text-lg text-white">Fibre Extrusion — BCF, CF & Melt-Blown</span>
+              <span className="text-[13px] text-white/60">Spinnerets · quench · nonwoven web formation</span>
+            </figcaption>
+          </figure>
+        </div>
+      </Section>
+
+      {/* ENERGY MEASUREMENT */}
+      <Section id="energy" eyebrow="06 — Energy Measurement" title="Turning power data into process decisions.">
         <div className="grid lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-5 reveal">
             <p className="text-[15px] leading-[1.85] text-ink/70">
