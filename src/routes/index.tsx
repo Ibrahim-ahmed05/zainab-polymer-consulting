@@ -537,7 +537,7 @@ function Index() {
       </Section>
 
       {/* PUBLICATIONS */}
-      <Section id="publications" eyebrow="06 — Publications" title="A decade and a half of peer-reviewed and industry publications." muted>
+      <Section id="publications" eyebrow="07 — Publications" title="A decade and a half of peer-reviewed and industry publications." muted>
         <div className="border-t border-border">
           {PUBLICATIONS.map((p, i) => (
             <a
@@ -562,7 +562,7 @@ function Index() {
       </Section>
 
       {/* CONFERENCES */}
-      <Section id="conferences" dark eyebrow="07 — Conferences" title="Continuous international engagement across four continents.">
+      <Section id="conferences" dark eyebrow="08 — Conferences" title="Continuous international engagement across four continents.">
         <div className="relative">
           <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-white/15" />
           <ol className="space-y-14">
@@ -598,7 +598,7 @@ function Index() {
       </Section>
 
       {/* WHY US */}
-      <Section id="why" eyebrow="08 — Why choose us" title="A practice built on rigour, discretion and industrial depth." muted>
+      <Section id="why" eyebrow="09 — Why choose us" title="A practice built on rigour, discretion and industrial depth." muted>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {WHY.map((w, i) => (
             <div key={w.t} className="group bg-white border border-border p-8 lift-card reveal" style={{ transitionDelay: `${(i % 3) * 60}ms` }}>
@@ -616,7 +616,7 @@ function Index() {
       </Section>
 
       {/* HONORS */}
-      <Section id="honors" eyebrow="09 — Honors & Memberships" title="Recognised affiliations and academic distinctions.">
+      <Section id="honors" eyebrow="10 — Honors & Memberships" title="Recognised affiliations and academic distinctions.">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-14">
           {[
             { icon: Award, label: "Professional Memberships", items: HONORS_MEMBERSHIPS },
@@ -683,7 +683,7 @@ function Index() {
       </section>
 
       {/* CONTACT */}
-      <Section id="contact" eyebrow="10 — Contact" title="Begin a confidential conversation.">
+      <Section id="contact" eyebrow="11 — Contact" title="Begin a confidential conversation.">
         <div className="grid lg:grid-cols-12 gap-14">
           <div className="lg:col-span-5 reveal space-y-8">
             <div>
