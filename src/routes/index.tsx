@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Beaker, Cog, Lightbulb } from "lucide-react";
+import { ArrowUpRight, Award, Beaker, Cog, GraduationCap, Lightbulb } from "lucide-react";
 import heroPlant from "@/assets/hero-plant.jpg";
 import pellets from "@/assets/pellets.jpg";
 import lab from "@/assets/lab.jpg";
@@ -9,6 +9,10 @@ import consultant from "@/assets/founder.png";
 import films from "@/assets/films.jpg";
 import conference from "@/assets/conference.jpg";
 import engel from "@/assets/engel-tradeshow.jpg";
+import thermoformingChain from "@/assets/thermoforming-chain.png";
+import techExtrusion from "@/assets/tech-extrusion.png";
+import mwdCurves from "@/assets/mwd-curves.png";
+import fiberTech from "@/assets/fiber-tech.png";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -172,13 +176,16 @@ const CONFERENCES = [
   { y: "2007", items: ["K-Show, Düsseldorf — Germany", "Chemindix, Manama — Bahrain"] },
 ];
 
-const HONORS = [
-  "Life Member — Pakistan Engineering Council",
-  "Member — Saudi Council of Engineers",
-  "Research Assistantship — M.S., KFUPM",
-  "University Scholarship — B.E., N.E.D. University",
-  "Government of Pakistan Scholarship — Higher Secondary",
-  "Merit Scholarship — Comilla Zila School",
+const HONORS_MEMBERSHIPS = [
+  { t: "Life Member", org: "Pakistan Engineering Council", note: "Chartered professional standing" },
+  { t: "Member", org: "Saudi Council of Engineers", note: "Registered engineering practitioner — KSA" },
+];
+
+const HONORS_ACADEMIC = [
+  { t: "Research Assistantship", org: "M.S., King Fahd University of Petroleum and Minerals", note: "Awarded on academic merit" },
+  { t: "University Scholarship", org: "B.E., N.E.D. University of Engineering & Technology", note: "Undergraduate merit award" },
+  { t: "Government of Pakistan Scholarship", org: "Higher Secondary", note: "National merit scholarship" },
+  { t: "Merit Scholarship", org: "Comilla Zila School", note: "Early-career academic distinction" },
 ];
 
 const TIMELINE = [
@@ -447,7 +454,66 @@ function Index() {
       </Section>
 
       {/* ENERGY MEASUREMENT */}
-      <Section id="energy" eyebrow="05 — Energy Measurement" title="Turning power data into process decisions.">
+      {/* TECHNOLOGY DIAGRAMS */}
+      <Section id="technology" dark eyebrow="05 — Technology" title="From resin architecture to converted product.">
+        <p className="max-w-3xl text-[15px] leading-[1.85] text-white/70 -mt-4 mb-14">
+          A working library of the process diagrams, molecular architectures and fibre technologies our engagements
+          routinely address — drawn from three decades of plant work across polyolefin producers and converters.
+        </p>
+
+        <div className="grid lg:grid-cols-12 gap-8">
+          {/* Value chain — full width */}
+          <figure className="lg:col-span-12 reveal group">
+            <div className="relative overflow-hidden border border-white/10 bg-white">
+              <img src={thermoformingChain} alt="Thermoforming value chain from resin supplier to consumer" className="w-full h-auto object-contain" loading="lazy" />
+            </div>
+            <figcaption className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-white/75">
+              <span className="eyebrow text-white/50">Fig. 01</span>
+              <span className="font-display text-lg text-white">Thermoforming Value Chain</span>
+              <span className="text-[13px] text-white/60">PP supplier · sheet extrusion · thermoforming · packaging · end-user</span>
+            </figcaption>
+          </figure>
+
+          {/* Extrusion technology */}
+          <figure className="lg:col-span-7 reveal group">
+            <div className="relative overflow-hidden border border-white/10 bg-white">
+              <img src={techExtrusion} alt="Extrusion schematic with feed pipe, die, breaker plate, barrel, screw, hopper and screw drive motor" className="w-full h-auto object-contain" loading="lazy" />
+            </div>
+            <figcaption className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-white/75">
+              <span className="eyebrow text-white/50">Fig. 02</span>
+              <span className="font-display text-lg text-white">Extrusion — Screw & Die Architecture</span>
+              <span className="text-[13px] text-white/60">Blown film · cast film · downstream converting</span>
+            </figcaption>
+          </figure>
+
+          {/* MWD curves */}
+          <figure className="lg:col-span-5 reveal group">
+            <div className="relative overflow-hidden border border-white/10 bg-white">
+              <img src={mwdCurves} alt="Molecular weight distribution curves — monomodal broad, monomodal narrow, bimodal broad" className="w-full h-auto object-contain" loading="lazy" />
+            </div>
+            <figcaption className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-white/75">
+              <span className="eyebrow text-white/50">Fig. 03</span>
+              <span className="font-display text-lg text-white">Molecular Weight Distribution</span>
+              <span className="text-[13px] text-white/60">Monomodal vs. bimodal grade selection</span>
+            </figcaption>
+          </figure>
+
+          {/* Fiber technology */}
+          <figure className="lg:col-span-12 reveal group">
+            <div className="relative overflow-hidden border border-white/10 bg-white">
+              <img src={fiberTech} alt="BCF, CF spinneret packs, quench cabinet and melt-blown fibre extrusion technologies" className="w-full h-auto object-contain" loading="lazy" />
+            </div>
+            <figcaption className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-white/75">
+              <span className="eyebrow text-white/50">Fig. 04</span>
+              <span className="font-display text-lg text-white">Fibre Extrusion — BCF, CF & Melt-Blown</span>
+              <span className="text-[13px] text-white/60">Spinnerets · quench · nonwoven web formation</span>
+            </figcaption>
+          </figure>
+        </div>
+      </Section>
+
+      {/* ENERGY MEASUREMENT */}
+      <Section id="energy" eyebrow="06 — Energy Measurement" title="Turning power data into process decisions.">
         <div className="grid lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-5 reveal">
             <p className="text-[15px] leading-[1.85] text-ink/70">
@@ -471,7 +537,7 @@ function Index() {
       </Section>
 
       {/* PUBLICATIONS */}
-      <Section id="publications" eyebrow="06 — Publications" title="A decade and a half of peer-reviewed and industry publications." muted>
+      <Section id="publications" eyebrow="07 — Publications" title="A decade and a half of peer-reviewed and industry publications." muted>
         <div className="border-t border-border">
           {PUBLICATIONS.map((p, i) => (
             <a
@@ -496,7 +562,7 @@ function Index() {
       </Section>
 
       {/* CONFERENCES */}
-      <Section id="conferences" dark eyebrow="07 — Conferences" title="Continuous international engagement across four continents.">
+      <Section id="conferences" dark eyebrow="08 — Conferences" title="Continuous international engagement across four continents.">
         <div className="relative">
           <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-white/15" />
           <ol className="space-y-14">
@@ -532,7 +598,7 @@ function Index() {
       </Section>
 
       {/* WHY US */}
-      <Section id="why" eyebrow="08 — Why choose us" title="A practice built on rigour, discretion and industrial depth." muted>
+      <Section id="why" eyebrow="09 — Why choose us" title="A practice built on rigour, discretion and industrial depth." muted>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {WHY.map((w, i) => (
             <div key={w.t} className="group bg-white border border-border p-8 lift-card reveal" style={{ transitionDelay: `${(i % 3) * 60}ms` }}>
@@ -550,14 +616,43 @@ function Index() {
       </Section>
 
       {/* HONORS */}
-      <Section id="honors" eyebrow="09 — Honors & Memberships" title="Recognised affiliations and academic distinctions.">
-        <div className="flex flex-wrap gap-3">
-          {HONORS.map((h) => (
-            <span key={h} className="reveal inline-flex items-center gap-3 border border-border px-5 py-3 text-[13px] text-ink/80 bg-white hover:border-navy-deep hover:text-navy-deep transition-colors">
-              <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-              {h}
-            </span>
-          ))}
+      <Section id="honors" eyebrow="10 — Honors & Memberships" title="Recognised affiliations and academic distinctions.">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-14">
+          {[
+            { icon: Award, label: "Professional Memberships", items: HONORS_MEMBERSHIPS },
+            { icon: GraduationCap, label: "Academic Distinctions & Scholarships", items: HONORS_ACADEMIC },
+          ].map((group) => {
+            const Icon = group.icon;
+            return (
+              <div key={group.label} className="reveal">
+                <div className="flex items-center gap-4 pb-6 border-b border-border">
+                  <span className="grid h-12 w-12 place-items-center rounded-sm bg-navy-deep text-white">
+                    <Icon className="h-5 w-5" strokeWidth={1.4} />
+                  </span>
+                  <div>
+                    <div className="eyebrow">Category</div>
+                    <div className="font-display text-xl text-ink leading-tight mt-1">{group.label}</div>
+                  </div>
+                </div>
+                <ul className="mt-2 divide-y divide-border">
+                  {group.items.map((it) => (
+                    <li key={it.t + it.org} className="group grid grid-cols-12 gap-4 py-5 hover:bg-mist/50 transition-colors px-1 -mx-1">
+                      <div className="col-span-1 pt-1">
+                        <span className="block h-2 w-2 rounded-full bg-gold ring-4 ring-gold/10" />
+                      </div>
+                      <div className="col-span-11">
+                        <div className="font-display text-[17px] text-ink leading-snug group-hover:text-navy-deep transition-colors">
+                          {it.t}
+                        </div>
+                        <div className="mt-1 text-[13.5px] text-ink/70">{it.org}</div>
+                        <div className="mt-1 text-[11.5px] tracking-[0.16em] uppercase text-steel">{it.note}</div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </div>
       </Section>
 
@@ -588,7 +683,7 @@ function Index() {
       </section>
 
       {/* CONTACT */}
-      <Section id="contact" eyebrow="10 — Contact" title="Begin a confidential conversation.">
+      <Section id="contact" eyebrow="11 — Contact" title="Begin a confidential conversation.">
         <div className="grid lg:grid-cols-12 gap-14">
           <div className="lg:col-span-5 reveal space-y-8">
             <div>
