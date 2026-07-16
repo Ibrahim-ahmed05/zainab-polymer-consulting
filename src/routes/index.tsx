@@ -558,13 +558,42 @@ function Index() {
 
       {/* HONORS */}
       <Section id="honors" eyebrow="09 — Honors & Memberships" title="Recognised affiliations and academic distinctions.">
-        <div className="flex flex-wrap gap-3">
-          {HONORS.map((h) => (
-            <span key={h} className="reveal inline-flex items-center gap-3 border border-border px-5 py-3 text-[13px] text-ink/80 bg-white hover:border-navy-deep hover:text-navy-deep transition-colors">
-              <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-              {h}
-            </span>
-          ))}
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-14">
+          {[
+            { icon: Award, label: "Professional Memberships", items: HONORS_MEMBERSHIPS },
+            { icon: GraduationCap, label: "Academic Distinctions & Scholarships", items: HONORS_ACADEMIC },
+          ].map((group) => {
+            const Icon = group.icon;
+            return (
+              <div key={group.label} className="reveal">
+                <div className="flex items-center gap-4 pb-6 border-b border-border">
+                  <span className="grid h-12 w-12 place-items-center rounded-sm bg-navy-deep text-white">
+                    <Icon className="h-5 w-5" strokeWidth={1.4} />
+                  </span>
+                  <div>
+                    <div className="eyebrow">Category</div>
+                    <div className="font-display text-xl text-ink leading-tight mt-1">{group.label}</div>
+                  </div>
+                </div>
+                <ul className="mt-2 divide-y divide-border">
+                  {group.items.map((it) => (
+                    <li key={it.t + it.org} className="group grid grid-cols-12 gap-4 py-5 hover:bg-mist/50 transition-colors px-1 -mx-1">
+                      <div className="col-span-1 pt-1">
+                        <span className="block h-2 w-2 rounded-full bg-gold ring-4 ring-gold/10" />
+                      </div>
+                      <div className="col-span-11">
+                        <div className="font-display text-[17px] text-ink leading-snug group-hover:text-navy-deep transition-colors">
+                          {it.t}
+                        </div>
+                        <div className="mt-1 text-[13.5px] text-ink/70">{it.org}</div>
+                        <div className="mt-1 text-[11.5px] tracking-[0.16em] uppercase text-steel">{it.note}</div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </div>
       </Section>
 
