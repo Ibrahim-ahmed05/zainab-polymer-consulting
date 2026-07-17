@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Award, Beaker, Cog, GraduationCap, Lightbulb } from "lucide-react";
+import { ArrowUpRight, Award, Beaker, Cog, GraduationCap, Lightbulb, X, ChevronLeft, ChevronRight } from "lucide-react";
 import heroPlant from "@/assets/hero-plant.jpg";
 import pellets from "@/assets/pellets.jpg";
 import lab from "@/assets/lab.jpg";
@@ -13,6 +13,11 @@ import thermoformingChain from "@/assets/thermoforming-chain.png";
 import techExtrusion from "@/assets/tech-extrusion.png";
 import mwdCurves from "@/assets/mwd-curves.png";
 import fiberTech from "@/assets/fiber-tech.png";
+import image1 from "@/assets/image1.png";
+import image2 from "@/assets/image2.png";
+import image3 from "@/assets/image3.png";
+import image4 from "@/assets/image4.png";
+import image5 from "@/assets/image5.png";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -195,12 +200,96 @@ const TIMELINE = [
   { y: "Today", h: "Zainab Polymer Consulting Services", s: "Independent consultancy for manufacturers and research centers worldwide" },
 ];
 
+const TECH_LIBRARY = [
+  {
+    id: "fig-thermoforming",
+    num: "Fig. 01",
+    title: "Thermoforming Value Chain",
+    category: "process" as const,
+    img: thermoformingChain,
+    desc: "PP supplier · sheet extrusion · thermoforming · packaging · end-user converting logistics",
+  },
+  {
+    id: "fig-extrusion",
+    num: "Fig. 02",
+    title: "Extrusion — Screw & Die Architecture",
+    category: "process" as const,
+    img: techExtrusion,
+    desc: "Blown film · cast film · downstream converting and melt filtration optimization",
+  },
+  {
+    id: "fig-mwd",
+    num: "Fig. 03",
+    title: "Molecular Weight Distribution (MWD)",
+    category: "science" as const,
+    img: mwdCurves,
+    desc: "Monomodal vs. bimodal grade selection and molecular weight design constraints",
+  },
+  {
+    id: "fig-image3",
+    num: "Fig. 04",
+    title: "Melt Flow Rheology & Viscosity Profiling",
+    category: "science" as const,
+    img: image3,
+    desc: "Shear thinning behavior and mechanical stability across PE and PP resin families",
+  },
+  {
+    id: "fig-image4",
+    num: "Fig. 05",
+    title: "Crystalline Morphology & Thermal Kinetics",
+    category: "science" as const,
+    img: image4,
+    desc: "Spherulite structure growth mapping under controlled thermal cooling rates",
+  },
+  {
+    id: "fig-fiber",
+    num: "Fig. 06",
+    title: "Fibre Extrusion — BCF, CF & Melt-Blown",
+    category: "process" as const,
+    img: fiberTech,
+    desc: "Spinneret geometry, quench cabinet dynamics, and nonwoven web laydown systems",
+  },
+  {
+    id: "fig-image5",
+    num: "Fig. 07",
+    title: "BOPP Film Stenter Orientation Profiles",
+    category: "process" as const,
+    img: image5,
+    desc: "Mechanical orientation in machine direction (MDO) and transverse direction (TDO)",
+  },
+];
+
 /* ----------------------------- component ----------------------------- */
 
 function Index() {
   useReveal();
   const scrolled = useScrolled(30);
   const [open, setOpen] = useState(false);
+  const [techTab, setTechTab] = useState<"all" | "science" | "process">("all");
+  const [selectedImgIdx, setSelectedImgIdx] = useState<number | null>(null);
+
+  const nextImg = () => {
+    if (selectedImgIdx !== null) {
+      setSelectedImgIdx((selectedImgIdx + 1) % TECH_LIBRARY.length);
+    }
+  };
+
+  const prevImg = () => {
+    if (selectedImgIdx !== null) {
+      setSelectedImgIdx((selectedImgIdx - 1 + TECH_LIBRARY.length) % TECH_LIBRARY.length);
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedImgIdx === null) return;
+      if (e.key === "ArrowRight") nextImg();
+      if (e.key === "ArrowLeft") prevImg();
+      if (e.key === "Escape") setSelectedImgIdx(null);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedImgIdx]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -281,7 +370,7 @@ function Index() {
       {/* HERO */}
       <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-navy-deep text-white">
         <div className="absolute inset-0">
-          <img src={heroPlant} alt="Polymer manufacturing facility at dusk" className="h-full w-full object-cover opacity-55" />
+          <img src={heroPlant} alt="Polymer manufacturing facility at dusk" className="h-full w-full object-cover opacity-55" fetchPriority="high" />
           <div className="absolute inset-0 bg-gradient-to-r from-navy-deep via-navy-deep/85 to-navy-deep/30" />
           <div className="absolute inset-0 bg-gradient-to-t from-navy-deep via-transparent to-transparent" />
         </div>
@@ -337,7 +426,7 @@ function Index() {
       </section>
 
       {/* ABOUT */}
-      <Section id="about" eyebrow="01 — About" title="A career at the intersection of polymer science and industrial practice.">
+      <Section id="about" eyebrow="01 — Profile" title="Bridging Scientific Polymer Research & Industrial Practice.">
         <div className="grid lg:grid-cols-12 gap-14 items-start">
           <div className="lg:col-span-5 reveal">
             <div className="image-zoom relative aspect-[4/5] bg-mist">
@@ -382,10 +471,10 @@ function Index() {
             {/* Timeline */}
             <div className="mt-14">
               <div className="eyebrow mb-6">Career Timeline</div>
-              <ol className="relative border-l border-border pl-8 space-y-8">
+              <ol className="relative border-l border-border space-y-8">
                 {TIMELINE.map((t) => (
-                  <li key={t.y} className="reveal">
-                    <span className="absolute -left-[7px] mt-2 h-3 w-3 rounded-full bg-navy-deep ring-4 ring-background" />
+                  <li key={t.y} className="relative pl-8 reveal">
+                    <span className="absolute left-0 -translate-x-1/2 mt-1.5 h-3 w-3 rounded-full bg-navy-deep ring-4 ring-background" />
                     <div className="eyebrow text-navy-deep">{t.y}</div>
                     <div className="mt-1 font-display text-xl text-ink">{t.h}</div>
                     <div className="mt-1 text-[14px] text-ink/70">{t.s}</div>
@@ -398,12 +487,12 @@ function Index() {
       </Section>
 
       {/* EXPERTISE */}
-      <Section id="expertise" dark eyebrow="02 — Expertise" title="Deep specialization across the polyolefin value chain.">
+      <Section id="expertise" dark eyebrow="02 — Technical Specialization" title="Deep Engineering Competency Across the Polyolefin Value Chain.">
         <ExpertiseSection />
       </Section>
 
       {/* INDUSTRIES */}
-      <Section id="industries" eyebrow="03 — Industries" title="Trusted across manufacturing, research and packaging.">
+      <Section id="industries" eyebrow="03 — Industrial Sectors" title="Strategic Technical Advisory Across Primary Plastic Industries.">
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {INDUSTRIES.map((i, idx) => (
             <div key={i.t} className="reveal image-zoom relative aspect-[4/5] group cursor-pointer" style={{ transitionDelay: `${(idx % 3) * 80}ms` }}>
@@ -420,21 +509,37 @@ function Index() {
       </Section>
 
       {/* MANUFACTURING EXPERTISE / CASE */}
-      <Section id="manufacturing" eyebrow="04 — Manufacturing" title="Plant-floor experience with the machinery that makes plastics." muted>
-        <div className="grid lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-6 reveal image-zoom">
-            <img src={engel} alt="Engineers observing an ENGEL injection molding machine at a trade show" className="w-full h-[520px] object-cover" loading="lazy" />
+      <Section id="manufacturing" eyebrow="04 — Manufacturing & Process" title="Optimizing Injection Molding, Extrusion, & Machine Dynamics." muted>
+        {/* Full-width horizontal images */}
+        <div className="grid md:grid-cols-2 gap-6 lg:gap-8 mb-16">
+          <div className="image-zoom relative aspect-[16/10] bg-mist border border-border shadow-sm reveal">
+            <img src={engel} alt="Engineers observing an ENGEL injection molding machine" className="w-full h-full object-cover" loading="lazy" />
+            <div className="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-navy-deep/80 to-transparent">
+              <span className="text-[11px] tracking-[0.25em] uppercase font-semibold text-white/90">Converting & Molding Machinery</span>
+            </div>
           </div>
-          <div className="lg:col-span-6 reveal">
-            <h3 className="font-display text-3xl md:text-4xl text-ink leading-tight">
+          <div className="image-zoom relative aspect-[16/10] bg-mist border border-border shadow-sm reveal" style={{ transitionDelay: '100ms' }}>
+            <img src={image1} alt="Process optimization parameters" className="w-full h-full object-cover" loading="lazy" />
+            <div className="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-navy-deep/80 to-transparent">
+              <span className="text-[11px] tracking-[0.25em] uppercase font-semibold text-white/90">Process Parameters & Diagnostics</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Text grid */}
+        <div className="grid lg:grid-cols-12 gap-12 items-start">
+          <div className="lg:col-span-7 reveal">
+            <h3 className="font-display text-4xl md:text-5xl text-ink leading-[1.15]">
               Injection molding, extrusion and machine troubleshooting.
             </h3>
-            <p className="mt-6 text-[15px] leading-[1.85] text-ink/70">
+            <p className="mt-8 text-[16px] leading-[1.85] text-ink/70">
               From ENGEL injection molding lines to profile, film and pipe extrusion trains — our engagements deliver
               measurable improvements in defect rates, cycle time, and energy consumption without compromising the
               performance of the finished product.
             </p>
-            <div className="mt-8 border-t border-border pt-8">
+          </div>
+          <div className="lg:col-span-5 reveal">
+            <div className="border border-border p-8 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.02)]">
               <div className="eyebrow mb-4">Case in brief — Small-Box PP Trial</div>
               <p className="text-[14px] text-ink/70 leading-relaxed">
                 Revised barrel-zone temperatures on a PP small-box trial (Z1–Z5: 205 · 220 · 235 · 240 · 240 °C) reduced
@@ -442,9 +547,9 @@ function Index() {
               </p>
               <div className="mt-6 grid grid-cols-5 gap-2">
                 {[205, 220, 235, 240, 240].map((v, i) => (
-                  <div key={i} className="border border-border p-3 text-center">
+                  <div key={i} className="border border-border p-3 text-center bg-mist/30">
                     <div className="eyebrow text-[10px]">Z{i + 1}</div>
-                    <div className="mt-1 font-display text-xl text-navy-deep tabular-nums">{v}°</div>
+                    <div className="mt-1 font-display text-lg font-medium text-navy-deep tabular-nums">{v}°</div>
                   </div>
                 ))}
               </div>
@@ -455,79 +560,112 @@ function Index() {
 
       {/* ENERGY MEASUREMENT */}
       {/* TECHNOLOGY DIAGRAMS */}
-      <Section id="technology" dark eyebrow="05 — Technology" title="From resin architecture to converted product.">
-        <p className="max-w-3xl text-[15px] leading-[1.85] text-white/70 -mt-4 mb-14">
-          A working library of the process diagrams, molecular architectures and fibre technologies our engagements
-          routinely address — drawn from three decades of plant work across polyolefin producers and converters.
+      {/* TECHNOLOGY DIAGRAMS */}
+      <Section id="technology" dark eyebrow="05 — Technical Diagrams" title="Scientific Models & Process Engineering Library.">
+        <p className="max-w-3xl text-[15px] leading-[1.85] text-white/70 -mt-4 mb-14 reveal">
+          An interactive catalog of the process schematics, crystallization kinetics, molecular distributions, and orientation matrices we actively leverage during client engagements.
         </p>
 
-        <div className="grid lg:grid-cols-12 gap-8">
-          {/* Value chain — full width */}
-          <figure className="lg:col-span-12 reveal group">
-            <div className="relative overflow-hidden border border-white/10 bg-white">
-              <img src={thermoformingChain} alt="Thermoforming value chain from resin supplier to consumer" className="w-full h-auto object-contain" loading="lazy" />
-            </div>
-            <figcaption className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-white/75">
-              <span className="eyebrow text-white/50">Fig. 01</span>
-              <span className="font-display text-lg text-white">Thermoforming Value Chain</span>
-              <span className="text-[13px] text-white/60">PP supplier · sheet extrusion · thermoforming · packaging · end-user</span>
-            </figcaption>
-          </figure>
+        {/* Category Tabs */}
+        <div className="flex flex-wrap gap-2 mb-10 border-b border-white/10 pb-6 reveal">
+          {[
+            { id: "all", label: "All Diagrams" },
+            { id: "science", label: "Material & Polymer Science" },
+            { id: "process", label: "Process & Converting" },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setTechTab(tab.id as any)}
+              className={
+                "px-5 py-2.5 text-xs font-medium tracking-wider uppercase transition-all duration-300 rounded-none cursor-pointer " +
+                (techTab === tab.id
+                  ? "bg-gold text-navy-deep font-semibold"
+                  : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white border border-white/10")
+              }
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-          {/* Extrusion technology */}
-          <figure className="lg:col-span-7 reveal group">
-            <div className="relative overflow-hidden border border-white/10 bg-white">
-              <img src={techExtrusion} alt="Extrusion schematic with feed pipe, die, breaker plate, barrel, screw, hopper and screw drive motor" className="w-full h-auto object-contain" loading="lazy" />
-            </div>
-            <figcaption className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-white/75">
-              <span className="eyebrow text-white/50">Fig. 02</span>
-              <span className="font-display text-lg text-white">Extrusion — Screw & Die Architecture</span>
-              <span className="text-[13px] text-white/60">Blown film · cast film · downstream converting</span>
-            </figcaption>
-          </figure>
-
-          {/* MWD curves */}
-          <figure className="lg:col-span-5 reveal group">
-            <div className="relative overflow-hidden border border-white/10 bg-white">
-              <img src={mwdCurves} alt="Molecular weight distribution curves — monomodal broad, monomodal narrow, bimodal broad" className="w-full h-auto object-contain" loading="lazy" />
-            </div>
-            <figcaption className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-white/75">
-              <span className="eyebrow text-white/50">Fig. 03</span>
-              <span className="font-display text-lg text-white">Molecular Weight Distribution</span>
-              <span className="text-[13px] text-white/60">Monomodal vs. bimodal grade selection</span>
-            </figcaption>
-          </figure>
-
-          {/* Fiber technology */}
-          <figure className="lg:col-span-12 reveal group">
-            <div className="relative overflow-hidden border border-white/10 bg-white">
-              <img src={fiberTech} alt="BCF, CF spinneret packs, quench cabinet and melt-blown fibre extrusion technologies" className="w-full h-auto object-contain" loading="lazy" />
-            </div>
-            <figcaption className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-white/75">
-              <span className="eyebrow text-white/50">Fig. 04</span>
-              <span className="font-display text-lg text-white">Fibre Extrusion — BCF, CF & Melt-Blown</span>
-              <span className="text-[13px] text-white/60">Spinnerets · quench · nonwoven web formation</span>
-            </figcaption>
-          </figure>
+        {/* Dynamic Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {(() => {
+            const filteredTech = TECH_LIBRARY.filter((item) => techTab === "all" || item.category === techTab);
+            return filteredTech.map((item, idx) => (
+              <div
+                key={item.id}
+                onClick={() => {
+                  const globalIdx = TECH_LIBRARY.findIndex((t) => t.id === item.id);
+                  setSelectedImgIdx(globalIdx);
+                }}
+                className={`group cursor-pointer bg-white/5 border border-white/10 hover:border-gold/30 transition-all duration-300 flex flex-col justify-between p-5 reveal ${
+                  idx === filteredTech.length - 1 && filteredTech.length % 3 === 1 ? "lg:col-start-2" : ""
+                }`}
+                style={{ transitionDelay: `${(idx % 3) * 60}ms` }}
+              >
+                <div>
+                  <div className="relative overflow-hidden aspect-[4/3] bg-white border border-white/10 flex items-center justify-center p-3 mb-5">
+                    <img
+                      src={item.img}
+                      alt={item.title}
+                      className="max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-navy-deep/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <span className="bg-navy-deep border border-white/20 text-white text-[10px] tracking-widest uppercase font-semibold px-4 py-2 flex items-center gap-2 shadow-lg">
+                        Expand View <ArrowUpRight size={12} />
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] tracking-[0.2em] uppercase text-gold font-medium">{item.num}</span>
+                    <span className="text-[9px] tracking-[0.15em] uppercase text-white/45 border border-white/10 px-1.5 py-0.5 rounded-sm">
+                      {item.category}
+                    </span>
+                  </div>
+                  <h4 className="font-display text-lg text-white mt-2 leading-snug group-hover:text-gold transition-colors">
+                    {item.title}
+                  </h4>
+                </div>
+                <p className="mt-4 text-[13px] leading-relaxed text-white/50 border-t border-white/5 pt-3">
+                  {item.desc}
+                </p>
+              </div>
+            ));
+          })()}
         </div>
       </Section>
 
       {/* ENERGY MEASUREMENT */}
-      <Section id="energy" eyebrow="06 — Energy Measurement" title="Turning power data into process decisions.">
-        <div className="grid lg:grid-cols-12 gap-10 items-center">
-          <div className="lg:col-span-5 reveal">
-            <p className="text-[15px] leading-[1.85] text-ink/70">
-              We instrument production lines to profile real electrical demand — line by line, phase by phase. The output
-              becomes the basis for objective decisions on set-points, machine selection and process re-design.
-            </p>
-            <div className="mt-8 grid grid-cols-3 gap-4">
-              <Stat k="Duration" v="~20 min" />
-              <Stat k="Start" v="0.283 kWh" />
-              <Stat k="End" v="11.419 kWh" />
+      <Section id="energy" eyebrow="06 — Energy Profiling" title="Empirical Telemetry: Translating Electrical Load Into Efficiency.">
+        <div className="grid lg:grid-cols-12 gap-12 items-start">
+          <div className="lg:col-span-5 reveal space-y-8">
+            <div>
+              <p className="text-[15px] leading-[1.85] text-ink/70">
+                We instrument production lines to profile real electrical demand — line by line, phase by phase. The output
+                becomes the basis for objective decisions on set-points, machine selection and process re-design.
+              </p>
+              <div className="mt-8 grid grid-cols-3 gap-4">
+                <Stat k="Duration" v="~20 min" />
+                <Stat k="Start" v="0.283 kWh" />
+                <Stat k="End" v="11.419 kWh" />
+              </div>
+              <div className="mt-6 flex items-baseline gap-4">
+                <div className="font-display text-5xl text-navy-deep tabular-nums">11.136</div>
+                <div className="text-[12px] tracking-[0.22em] uppercase text-steel">kWh consumed</div>
+              </div>
             </div>
-            <div className="mt-6 flex items-baseline gap-4">
-              <div className="font-display text-5xl text-navy-deep tabular-nums">11.136</div>
-              <div className="text-[12px] tracking-[0.22em] uppercase text-steel">kWh consumed</div>
+
+            {/* Telemetry Instrumentation Image */}
+            <div className="border border-border bg-white p-5 shadow-sm">
+              <div className="eyebrow mb-3 text-steel">Telemetry Setup</div>
+              <div className="image-zoom relative aspect-[16/9] overflow-hidden bg-mist border border-border">
+                <img src={image2} alt="Energy measurement telemetry setup" className="w-full h-full object-cover" loading="lazy" />
+              </div>
+              <p className="mt-3 text-[12px] leading-relaxed text-ink/60">
+                Logging real-time motor current draw and heating band duty cycles during operational extrusion trials.
+              </p>
             </div>
           </div>
           <div className="lg:col-span-7 reveal">
@@ -537,7 +675,7 @@ function Index() {
       </Section>
 
       {/* PUBLICATIONS */}
-      <Section id="publications" eyebrow="07 — Publications" title="A decade and a half of peer-reviewed and industry publications." muted>
+      <Section id="publications" eyebrow="07 — Publications" title="Peer-Reviewed Research Papers, Patents, and Technical Articles." muted>
         <div className="border-t border-border">
           {PUBLICATIONS.map((p, i) => (
             <a
@@ -562,17 +700,17 @@ function Index() {
       </Section>
 
       {/* CONFERENCES */}
-      <Section id="conferences" dark eyebrow="08 — Conferences" title="Continuous international engagement across four continents.">
+      <Section id="conferences" dark eyebrow="08 — Global Engagement" title="Continuous Academic & Technical Presence Across Four Continents.">
         <div className="relative">
           <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-white/15" />
           <ol className="space-y-14">
             {CONFERENCES.map((c, i) => (
-              <li key={c.y} className={"relative grid md:grid-cols-2 gap-6 md:gap-16 reveal " + (i % 2 ? "md:[&>*:first-child]:col-start-2" : "")}>
+              <li key={c.y} className="relative grid md:grid-cols-2 gap-6 md:gap-16 reveal">
                 <span className="absolute left-4 md:left-1/2 -translate-x-1/2 top-2 h-3 w-3 rounded-full bg-gold ring-4 ring-navy-deep" />
-                <div className={"pl-12 md:pl-0 " + (i % 2 ? "md:text-left md:pl-16" : "md:text-right md:pr-16")}>
+                <div className={"pl-12 md:pl-0 " + (i % 2 ? "md:text-left md:pl-16 md:order-2" : "md:text-right md:pr-16 md:order-1")}>
                   <div className="font-display text-5xl md:text-6xl text-white/90 tabular-nums">{c.y}</div>
                 </div>
-                <div className={"pl-12 md:pl-0 " + (i % 2 ? "md:pr-16 md:text-right" : "md:pl-16")}>
+                <div className={"pl-12 md:pl-0 " + (i % 2 ? "md:pr-16 md:text-right md:order-1" : "md:pl-16 md:order-2")}>
                   <ul className="space-y-3">
                     {c.items.map((it) => (
                       <li key={it} className="text-[14px] text-white/75 leading-relaxed">{it}</li>
@@ -598,7 +736,7 @@ function Index() {
       </Section>
 
       {/* WHY US */}
-      <Section id="why" eyebrow="09 — Why choose us" title="A practice built on rigour, discretion and industrial depth." muted>
+      <Section id="why" eyebrow="09 — Advisory Principles" title="Core Pillars of Our Technical Partnership & Consulting Value." muted>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {WHY.map((w, i) => (
             <div key={w.t} className="group bg-white border border-border p-8 lift-card reveal" style={{ transitionDelay: `${(i % 3) * 60}ms` }}>
@@ -616,7 +754,7 @@ function Index() {
       </Section>
 
       {/* HONORS */}
-      <Section id="honors" eyebrow="10 — Honors & Memberships" title="Recognised affiliations and academic distinctions.">
+      <Section id="honors" eyebrow="10 — Credentials" title="Professional Affiliations & High-Value Academic Honors.">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-14">
           {[
             { icon: Award, label: "Professional Memberships", items: HONORS_MEMBERSHIPS },
@@ -683,7 +821,7 @@ function Index() {
       </section>
 
       {/* CONTACT */}
-      <Section id="contact" eyebrow="11 — Contact" title="Begin a confidential conversation.">
+      <Section id="contact" eyebrow="11 — Consultation" title="Initiate a Secure, High-Value Engagement.">
         <div className="grid lg:grid-cols-12 gap-14">
           <div className="lg:col-span-5 reveal space-y-8">
             <div>
@@ -781,6 +919,68 @@ function Index() {
           </div>
         </div>
       </footer>
+
+      {/* LIGHTBOX MODAL */}
+      {selectedImgIdx !== null && (
+        <div className="fixed inset-0 z-[100] flex flex-col justify-between bg-navy-deep/98 backdrop-blur-md text-white p-4 md:p-8 animate-fade-in">
+          {/* Top Bar */}
+          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <div>
+              <span className="text-[10px] tracking-[0.2em] uppercase text-gold font-medium">
+                {TECH_LIBRARY[selectedImgIdx].num} · {TECH_LIBRARY[selectedImgIdx].category}
+              </span>
+              <h3 className="font-display text-xl md:text-2xl mt-1 text-white leading-tight">
+                {TECH_LIBRARY[selectedImgIdx].title}
+              </h3>
+            </div>
+            <button
+              onClick={() => setSelectedImgIdx(null)}
+              className="h-10 w-10 border border-white/10 hover:border-gold hover:text-gold transition-colors flex items-center justify-center rounded-none cursor-pointer"
+              aria-label="Close lightbox"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          {/* Main Stage */}
+          <div className="relative flex-1 flex items-center justify-center py-6 md:py-10">
+            {/* Prev Button */}
+            <button
+              onClick={prevImg}
+              className="absolute left-0 md:left-4 z-10 h-12 w-12 border border-white/10 hover:border-gold hover:text-gold transition-colors flex items-center justify-center bg-navy-deep/50 backdrop-blur-sm rounded-none cursor-pointer"
+              aria-label="Previous diagram"
+            >
+              <ChevronLeft size={24} />
+            </button>
+
+            {/* Image Container */}
+            <div className="max-w-5xl max-h-[60vh] md:max-h-[70vh] w-full h-full flex items-center justify-center p-4 bg-white border border-white/10 shadow-2xl rounded-none">
+              <img
+                src={TECH_LIBRARY[selectedImgIdx].img}
+                alt={TECH_LIBRARY[selectedImgIdx].title}
+                className="max-h-full max-w-full object-contain"
+              />
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={nextImg}
+              className="absolute right-0 md:right-4 z-10 h-12 w-12 border border-white/10 hover:border-gold hover:text-gold transition-colors flex items-center justify-center bg-navy-deep/50 backdrop-blur-sm rounded-none cursor-pointer"
+              aria-label="Next diagram"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
+
+          {/* Footer Bar */}
+          <div className="border-t border-white/10 pt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-[13px] text-white/70">
+            <p className="max-w-2xl leading-relaxed">{TECH_LIBRARY[selectedImgIdx].desc}</p>
+            <div className="text-[11px] tracking-wider uppercase text-white/40 select-none">
+              Use <kbd className="border border-white/20 px-1.5 py-0.5 bg-white/5">←</kbd> / <kbd className="border border-white/20 px-1.5 py-0.5 bg-white/5">→</kbd> keys to navigate · <kbd className="border border-white/20 px-1.5 py-0.5 bg-white/5">Esc</kbd> to close
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -911,7 +1111,12 @@ function Section({
       <div className="container-x">
         <div className="grid lg:grid-cols-12 gap-10 mb-16 md:mb-20 items-end reveal">
           <div className="lg:col-span-5">
-            <div className={"eyebrow " + (dark ? "text-white/60" : "")}>{eye}</div>
+            <div className="flex items-center gap-3">
+              <span className="h-[2px] w-6 bg-gold shrink-0" />
+              <div className={"text-[13px] md:text-[14px] tracking-[0.22em] uppercase font-semibold " + (dark ? "text-white/80" : "text-navy-deep")}>
+                {eye}
+              </div>
+            </div>
           </div>
           <div className="lg:col-span-7">
             <h2 className={"font-display text-3xl md:text-[44px] lg:text-[52px] font-normal leading-[1.1] tracking-tight " + (dark ? "text-white" : "text-ink")}>
