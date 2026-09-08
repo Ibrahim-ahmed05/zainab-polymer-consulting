@@ -1,23 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { BrandLogo } from "@/components/BrandLogo";
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Award, Beaker, Cog, GraduationCap, Lightbulb, X, ChevronLeft, ChevronRight } from "lucide-react";
-import heroPlant from "@/assets/hero-plant.jpg";
-import pellets from "@/assets/pellets.jpg";
-import lab from "@/assets/lab.jpg";
-import extrusion from "@/assets/extrusion.jpg";
-import consultant from "@/assets/founder.png";
-import films from "@/assets/films.jpg";
-import conference from "@/assets/conference.jpg";
-import engel from "@/assets/engel-tradeshow.jpg";
-import thermoformingChain from "@/assets/thermoforming-chain.png";
-import techExtrusion from "@/assets/tech-extrusion.png";
-import mwdCurves from "@/assets/mwd-curves.png";
-import fiberTech from "@/assets/fiber-tech.png";
-import image1 from "@/assets/image1.png";
-import image2 from "@/assets/image2.png";
-import image3 from "@/assets/image3.png";
-import image4 from "@/assets/image4.png";
-import image5 from "@/assets/image5.png";
+import heroPlant from "@/assets/hero-plant.webp";
+import pellets from "@/assets/pellets.webp";
+import lab from "@/assets/lab.webp";
+import extrusion from "@/assets/extrusion.webp";
+import consultant from "@/assets/founder.webp";
+import films from "@/assets/films.webp";
+import engel from "@/assets/engel-tradeshow.webp";
+import thermoformingChain from "@/assets/thermoforming-chain.webp";
+import techExtrusion from "@/assets/tech-extrusion.webp";
+import mwdCurves from "@/assets/mwd-curves.webp";
+import fiberTech from "@/assets/fiber-tech.webp";
+import image1 from "@/assets/image1.webp";
+import image2 from "@/assets/image2.webp";
+import image3 from "@/assets/image3.webp";
+import image4 from "@/assets/image4.webp";
+import image5 from "@/assets/image5.webp";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -62,23 +62,25 @@ function Counter({ to, suffix = "", duration = 1600 }: { to: number; suffix?: st
     const el = ref.current;
     if (!el) return;
     let started = false;
+    let frame = 0;
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) {
         if (e.isIntersecting && !started) {
           started = true;
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setN(to); return; }
           const start = performance.now();
           const tick = (t: number) => {
             const p = Math.min(1, (t - start) / duration);
             const eased = 1 - Math.pow(1 - p, 3);
             setN(Math.round(to * eased));
-            if (p < 1) requestAnimationFrame(tick);
+            if (p < 1) frame = requestAnimationFrame(tick);
           };
-          requestAnimationFrame(tick);
+          frame = requestAnimationFrame(tick);
         }
       }
     }, { threshold: 0.5 });
     io.observe(el);
-    return () => io.disconnect();
+    return () => { io.disconnect(); cancelAnimationFrame(frame); };
   }, [to, duration]);
   return <span ref={ref}>{n}{suffix}</span>;
 }
@@ -195,6 +197,7 @@ const HONORS_ACADEMIC = [
 
 const TIMELINE = [
   { y: "1984", h: "B.E. Mechanical Engineering", s: "N.E.D. University of Engineering and Technology, Karachi" },
+  { y: "1984–1990", h: "Engineering Design (Mechanical Equipment)", s: "Karachi Shipyard and Engineering Works" },
   { y: "1993", h: "M.S. Mechanical Engineering", s: "King Fahd University of Petroleum and Minerals — Design Dynamics and Control" },
   { y: "1998–2014", h: "Industrial R&D and Consultancy", s: "Polyolefin research, stabilization, and commercial process optimization across the Gulf" },
   { y: "Today", h: "Zainab Polymer Consulting Services", s: "Independent consultancy for manufacturers and research centers worldwide" },
@@ -266,7 +269,22 @@ function Index() {
   const scrolled = useScrolled(30);
   const [open, setOpen] = useState(false);
   const [techTab, setTechTab] = useState<"all" | "science" | "process">("all");
+  const [diagramIndex, setDiagramIndex] = useState(0);
+  const diagramTouchStart = useRef<number | null>(null);
+  const diagrams = TECH_LIBRARY.filter((item) => techTab === "all" || item.category === techTab);
+  const activeDiagram = diagrams[diagramIndex % diagrams.length];
+  const moveDiagram = (direction: number) => setDiagramIndex((current) => (current + direction + diagrams.length) % diagrams.length);
   const [selectedImgIdx, setSelectedImgIdx] = useState<number | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const isViewerOpen = selectedImgIdx !== null;
+  useEffect(() => {
+    if (!isViewerOpen) return;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialogRef.current?.focus();
+    return () => { document.body.style.overflow = previousOverflow; previousFocus?.focus({ preventScroll: true }); };
+  }, [isViewerOpen]);
 
   const nextImg = () => {
     if (selectedImgIdx !== null) {
@@ -302,18 +320,16 @@ function Index() {
             : "bg-transparent")
         }
       >
-        <div className="container-x flex h-20 items-center justify-between">
-          <a href="#top" className="flex items-center gap-3 group">
-            <span className={"h-8 w-8 rounded-sm border transition-colors duration-500 " + (scrolled ? "border-navy-deep bg-navy-deep" : "border-white/70 bg-white/10")}>
-              <span className="grid h-full place-items-center font-display text-[13px] font-semibold text-white">Z</span>
-            </span>
+        <div className="container-x site-header-inner flex items-center justify-between">
+          <a href="#top" aria-label="Zainab Polymer Consulting Services — home" className="flex shrink-0 items-center gap-3 group rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4">
+            <BrandLogo />
             <span className={"flex flex-col leading-none transition-colors duration-500 " + (scrolled ? "text-navy-deep" : "text-white")}>
-              <span className="font-display text-[15px] font-medium tracking-tight">Zainab Polymer</span>
-              <span className="text-[10px] tracking-[0.28em] uppercase opacity-70">Consulting Services</span>
+              <span className="font-display text-[23px] font-normal tracking-[0.15em] uppercase">Zainab</span>
+              <span className="text-[10px] tracking-[0.28em] uppercase opacity-70">Polymer Consulting</span>
             </span>
           </a>
 
-          <nav className="hidden lg:flex items-center gap-9">
+          <nav className="hidden xl:flex items-center gap-5">
             {NAV.map((n) => (
               <a
                 key={n.id}
@@ -331,10 +347,10 @@ function Index() {
           <a
             href="#contact"
             className={
-              "hidden md:inline-flex items-center gap-2 rounded-none px-5 py-3 text-[12px] font-medium tracking-[0.15em] uppercase transition-all duration-300 " +
+              "hidden md:inline-flex items-center gap-3 rounded-full border px-6 py-4 text-[12px] font-medium tracking-[0.15em] uppercase transition-all duration-300 " +
               (scrolled
-                ? "bg-navy-deep text-white hover:bg-ink"
-                : "bg-white text-navy-deep hover:bg-mist")
+                ? "border-navy-deep bg-navy-deep text-white hover:bg-ink"
+                : "border-white/60 bg-white/5 text-white hover:bg-white/15")
             }
           >
             Schedule Consultation
@@ -342,9 +358,11 @@ function Index() {
           </a>
 
           <button
-            className={"lg:hidden rounded-sm p-2 " + (scrolled ? "text-navy-deep" : "text-white")}
+            className={"xl:hidden rounded-sm p-2 " + (scrolled ? "text-navy-deep" : "text-white")}
             onClick={() => setOpen((v) => !v)}
             aria-label="Toggle menu"
+            aria-expanded={open}
+            aria-controls="mobile-navigation"
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M4 7h16M4 12h16M4 17h16" />
@@ -352,7 +370,7 @@ function Index() {
           </button>
         </div>
         {open && (
-          <div className="lg:hidden bg-white border-t border-border">
+          <div id="mobile-navigation" className="xl:hidden bg-white border-t border-border max-h-[calc(100svh-104px)] overflow-y-auto" data-lenis-prevent>
             <div className="container-x py-4 flex flex-col gap-3">
               {NAV.map((n) => (
                 <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="py-2 text-[14px] text-ink/80">
@@ -368,68 +386,43 @@ function Index() {
       </header>
 
       {/* HERO */}
-      <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-navy-deep text-white">
-        <div className="absolute inset-0">
-          <img src={heroPlant} alt="Polymer manufacturing facility at dusk" className="h-full w-full object-cover opacity-55" fetchPriority="high" />
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-deep via-navy-deep/85 to-navy-deep/30" />
-          <div className="absolute inset-0 bg-gradient-to-t from-navy-deep via-transparent to-transparent" />
-        </div>
-
-        <div className="relative container-x pt-40 pb-24 md:pt-48 md:pb-32 grid lg:grid-cols-12 gap-16 items-center min-h-[100svh]">
-          <div className="lg:col-span-8 reveal">
-            <div className="flex items-center gap-4 mb-8">
-              <span className="h-px w-10 bg-gold/70" />
-              <span className="eyebrow text-white/70">Est. 1993 · Global Practice</span>
-            </div>
-            <h1 className="font-display text-[42px] leading-[1.08] md:text-[64px] lg:text-[76px] font-normal tracking-tight">
-              Polyolefin technology<br />and plastics manufacturing<br />
-              <span className="text-gold">consultancy.</span>
-            </h1>
-            <p className="mt-10 max-w-2xl text-[17px] leading-relaxed text-white/75">
-              Helping manufacturers improve polymer performance, production efficiency, product quality and long-term
-              process reliability — through three decades of industrial expertise led by Engr. Neaz Ahmed.
+      <section id="top" className="consulting-hero">
+        <img src="/polymer-hero.webp" alt="Blue and clear polymer pellets spilling from a glass vessel" className="consulting-hero__image" fetchPriority="high" />
+        <div className="consulting-hero__shade" />
+        <div className="container-x consulting-hero__inner">
+          <div className="consulting-hero__copy">
+            <p className="consulting-hero__eyebrow">Est. 1993 · Global Practice</p>
+            <h1 className="consulting-hero__title">Polyolefin technology<br className="hidden md:block" /> and plastics manufacturing <span>consultancy.</span></h1>
+            <p className="consulting-hero__description">
+              Helping manufacturers improve <strong>polymer performance</strong>, <strong>production efficiency</strong>, product quality and long-term process reliability — through three decades of industrial expertise led by Engr. Neaz Ahmed.
             </p>
-            <div className="mt-12 flex flex-wrap gap-4">
-              <a href="#contact" className="group inline-flex items-center gap-3 bg-white text-navy-deep px-8 py-4 text-[12px] tracking-[0.2em] uppercase font-medium hover:bg-mist transition-all">
-                Book a Consultation
-                <span className="transition-transform group-hover:translate-x-1">→</span>
-              </a>
-              <a href="#expertise" className="inline-flex items-center gap-3 border border-white/40 text-white px-8 py-4 text-[12px] tracking-[0.2em] uppercase font-medium hover:bg-white/10 transition-all">
-                Explore Expertise
-              </a>
+            <div className="consulting-hero__actions">
+              <a href="#contact" className="consulting-hero__primary">Book a Consultation <span aria-hidden="true">→</span></a>
+              <a href="#expertise" className="consulting-hero__secondary">Explore Expertise <span aria-hidden="true">↗</span></a>
             </div>
-          </div>
-
-          <div className="lg:col-span-4 hidden lg:block reveal">
-            <div className="relative border-l border-white/15 pl-8 space-y-10">
+            <div className="consulting-hero__stats">
               {[
                 { n: 30, s: "+", l: "Years of industry experience" },
                 { n: 20, s: "+", l: "International conferences" },
                 { n: 10, s: "+", l: "Publications & proceedings" },
                 { n: 8, s: "", l: "Countries of practice" },
               ].map((k) => (
-                <div key={k.l}>
-                  <div className="font-display text-5xl font-normal tabular-nums">
-                    <Counter to={k.n} suffix={k.s} />
-                  </div>
-                  <div className="mt-2 text-[11px] tracking-[0.22em] uppercase text-white/60">{k.l}</div>
+                <div key={k.l} className="consulting-hero__stat">
+                  <div className="consulting-hero__number"><Counter to={k.n} suffix={k.s} /></div>
+                  <div className="consulting-hero__label">{k.l}</div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
+          <div className="consulting-hero__annotation" aria-hidden="true">Science<br />Industry<br />A better tomorrow</div>
 
-        <div className="absolute bottom-8 inset-x-0 container-x flex items-center justify-between text-white/60 text-[11px] tracking-[0.28em] uppercase">
-          <span>Scroll</span>
-          <span className="hidden md:inline">Polymer Science · Polyolefin Technology · Manufacturing</span>
         </div>
       </section>
-
       {/* ABOUT */}
       <Section id="about" eyebrow="01 — Profile" title="Bridging Scientific Polymer Research & Industrial Practice.">
         <div className="grid lg:grid-cols-12 gap-14 items-start">
-          <div className="lg:col-span-5 reveal">
-            <div className="image-zoom relative aspect-[4/5] bg-mist">
+          <div className="lg:col-span-5 reveal flex flex-col gap-6 lg:self-stretch">
+            <div className="image-zoom relative aspect-[4/5] shrink-0 bg-mist">
               <img src={consultant} alt="Engr. Neaz Ahmed in industrial environment" className="h-full w-full object-cover" loading="lazy" />
               <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-navy-deep/90 to-transparent">
                 <div className="text-white">
@@ -437,6 +430,17 @@ function Index() {
                   <div className="text-[11px] tracking-[0.22em] uppercase text-white/70 mt-1">Founder & Principal Consultant</div>
                 </div>
               </div>
+            </div>
+            <div className="relative aspect-[3/2] overflow-hidden bg-mist lg:flex-1">
+              <img
+                src="/neaz-ahmed-portrait.webp"
+                alt="Engr. Neaz Ahmed smiling while speaking on the phone"
+                width={1536}
+                height={1024}
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 h-full w-full object-cover object-[center_25%]"
+              />
             </div>
           </div>
 
@@ -487,7 +491,7 @@ function Index() {
       </Section>
 
       {/* EXPERTISE */}
-      <Section id="expertise" dark eyebrow="02 — Technical Specialization" title="Deep Engineering Competency Across the Polyolefin Value Chain.">
+      <Section id="expertise" muted eyebrow="02 — Technical Specialization" title="Deep Engineering Competency Across the Polyolefin Value Chain.">
         <ExpertiseSection />
       </Section>
 
@@ -558,122 +562,59 @@ function Index() {
         </div>
       </Section>
 
-      {/* ENERGY MEASUREMENT */}
-      {/* TECHNOLOGY DIAGRAMS */}
-      {/* TECHNOLOGY DIAGRAMS */}
-      <Section id="technology" dark eyebrow="05 — Technical Diagrams" title="Scientific Models & Process Engineering Library.">
-        <p className="max-w-3xl text-[15px] leading-[1.85] text-white/70 -mt-4 mb-14 reveal">
-          An interactive catalog of the process schematics, crystallization kinetics, molecular distributions, and orientation matrices we actively leverage during client engagements.
-        </p>
-
-        {/* Category Tabs */}
-        <div className="flex flex-wrap gap-2 mb-10 border-b border-white/10 pb-6 reveal">
-          {[
-            { id: "all", label: "All Diagrams" },
-            { id: "science", label: "Material & Polymer Science" },
-            { id: "process", label: "Process & Converting" },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setTechTab(tab.id as any)}
-              className={
-                "px-5 py-2.5 text-xs font-medium tracking-wider uppercase transition-all duration-300 rounded-none cursor-pointer " +
-                (techTab === tab.id
-                  ? "bg-gold text-navy-deep font-semibold"
-                  : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white border border-white/10")
-              }
-            >
-              {tab.label}
-            </button>
+      <Section id="technology" muted eyebrow="05 — Technical Diagrams" title="Scientific Models & Process Engineering Library.">
+        <p className="library-intro">An interactive catalog of the process schematics, crystallization kinetics, molecular distributions, and orientation matrices we actively leverage during client engagements.</p>
+        <div className="library-filters" role="group" aria-label="Filter technical diagrams">
+          {([{ id: "all", label: "All Diagrams" }, { id: "science", label: "Material & Polymer Science" }, { id: "process", label: "Process & Converting" }] as const).map(tab => (
+            <button key={tab.id} type="button" className="library-filter" aria-pressed={techTab === tab.id} aria-controls="technical-library-grid" onClick={() => { setTechTab(tab.id); setDiagramIndex(0); }}>{tab.label}</button>
           ))}
         </div>
-
-        {/* Dynamic Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {(() => {
-            const filteredTech = TECH_LIBRARY.filter((item) => techTab === "all" || item.category === techTab);
-            return filteredTech.map((item, idx) => (
-              <div
-                key={item.id}
-                onClick={() => {
-                  const globalIdx = TECH_LIBRARY.findIndex((t) => t.id === item.id);
-                  setSelectedImgIdx(globalIdx);
-                }}
-                className={`group cursor-pointer bg-white/5 border border-white/10 hover:border-gold/30 transition-all duration-300 flex flex-col justify-between p-5 reveal ${
-                  idx === filteredTech.length - 1 && filteredTech.length % 3 === 1 ? "lg:col-start-2" : ""
-                }`}
-                style={{ transitionDelay: `${(idx % 3) * 60}ms` }}
-              >
-                <div>
-                  <div className="relative overflow-hidden aspect-[4/3] bg-white border border-white/10 flex items-center justify-center p-3 mb-5">
-                    <img
-                      src={item.img}
-                      alt={item.title}
-                      className="max-h-full max-w-full object-contain transition-transform duration-700 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-navy-deep/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <span className="bg-navy-deep border border-white/20 text-white text-[10px] tracking-widest uppercase font-semibold px-4 py-2 flex items-center gap-2 shadow-lg">
-                        Expand View <ArrowUpRight size={12} />
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] tracking-[0.2em] uppercase text-gold font-medium">{item.num}</span>
-                    <span className="text-[9px] tracking-[0.15em] uppercase text-white/45 border border-white/10 px-1.5 py-0.5 rounded-sm">
-                      {item.category}
-                    </span>
-                  </div>
-                  <h4 className="font-display text-lg text-white mt-2 leading-snug group-hover:text-gold transition-colors">
-                    {item.title}
-                  </h4>
-                </div>
-                <p className="mt-4 text-[13px] leading-relaxed text-white/50 border-t border-white/5 pt-3">
-                  {item.desc}
-                </p>
-              </div>
-            ));
-          })()}
+        <div id="technical-library-grid" className="diagram-carousel" role="region" aria-roledescription="carousel" aria-label="Technical diagrams"
+          onKeyDown={event => { if (event.key === "ArrowRight" || event.key === "ArrowLeft") { event.preventDefault(); moveDiagram(event.key === "ArrowRight" ? 1 : -1); } }}
+          onTouchStart={event => { diagramTouchStart.current = event.touches[0].clientX; }}
+          onTouchEnd={event => { if (diagramTouchStart.current !== null) { const distance = event.changedTouches[0].clientX - diagramTouchStart.current; if (Math.abs(distance) > 60) moveDiagram(distance < 0 ? 1 : -1); } diagramTouchStart.current = null; }}>
+          <article className="diagram-slide" aria-roledescription="slide" aria-label={`${diagramIndex + 1} of ${diagrams.length}`}>
+            <button type="button" className="library-preview" aria-label={`Expand View: ${activeDiagram.title}`} onClick={() => setSelectedImgIdx(TECH_LIBRARY.findIndex(item => item.id === activeDiagram.id))}>
+              <img src={activeDiagram.img} alt={activeDiagram.title} loading="lazy" decoding="async" />
+              <span className="library-expand">Expand View <ArrowUpRight size={15} aria-hidden="true" /></span>
+            </button>
+            <div className="library-caption" aria-live="polite" aria-atomic="true">
+              <div className="library-meta"><span>{activeDiagram.num}</span><span>{activeDiagram.category}</span></div>
+              <h3>{activeDiagram.title}</h3><p>{activeDiagram.desc}</p>
+            </div>
+          </article>
+          <div className="diagram-controls">
+            <div className="diagram-dots" aria-label="Choose a diagram">{diagrams.map((item, index) => <button key={item.id} type="button" aria-label={`Show ${item.title}`} aria-current={index === diagramIndex ? "true" : undefined} onClick={() => setDiagramIndex(index)}><span /></button>)}</div>
+            <div className="diagram-pagination"><span className="diagram-position">{String(diagramIndex + 1).padStart(2, "0")} / {String(diagrams.length).padStart(2, "0")}</span><button type="button" aria-label="Previous diagram" onClick={() => moveDiagram(-1)}><ChevronLeft size={20} /></button><button type="button" aria-label="Next diagram" onClick={() => moveDiagram(1)}><ChevronRight size={20} /></button></div>
+          </div>
         </div>
       </Section>
-
       {/* ENERGY MEASUREMENT */}
       <Section id="energy" eyebrow="06 — Energy Profiling" title="Empirical Telemetry: Translating Electrical Load Into Efficiency.">
-        <div className="grid lg:grid-cols-12 gap-12 items-start">
-          <div className="lg:col-span-5 reveal space-y-8">
-            <div>
-              <p className="text-[15px] leading-[1.85] text-ink/70">
-                We instrument production lines to profile real electrical demand — line by line, phase by phase. The output
-                becomes the basis for objective decisions on set-points, machine selection and process re-design.
-              </p>
-              <div className="mt-8 grid grid-cols-3 gap-4">
-                <Stat k="Duration" v="~20 min" />
-                <Stat k="Start" v="0.283 kWh" />
-                <Stat k="End" v="11.419 kWh" />
-              </div>
-              <div className="mt-6 flex items-baseline gap-4">
-                <div className="font-display text-5xl text-navy-deep tabular-nums">11.136</div>
-                <div className="text-[12px] tracking-[0.22em] uppercase text-steel">kWh consumed</div>
-              </div>
-            </div>
-
-            {/* Telemetry Instrumentation Image */}
-            <div className="border border-border bg-white p-5 shadow-sm">
-              <div className="eyebrow mb-3 text-steel">Telemetry Setup</div>
-              <div className="image-zoom relative aspect-[16/9] overflow-hidden bg-mist border border-border">
-                <img src={image2} alt="Energy measurement telemetry setup" className="w-full h-full object-cover" loading="lazy" />
-              </div>
-              <p className="mt-3 text-[12px] leading-relaxed text-ink/60">
-                Logging real-time motor current draw and heating band duty cycles during operational extrusion trials.
-              </p>
-            </div>
-          </div>
-          <div className="lg:col-span-7 reveal">
-            <EnergyChart />
+        <div className="energy-overview">
+          <BrandLogo prominent />
+          <p className="energy-description">
+            We instrument production lines to profile real electrical demand — line by line, phase by phase. The output
+            becomes the basis for objective decisions on set-points, machine selection and process re-design.
+          </p>
+          <div className="energy-metrics">
+            <Stat k="Duration" v="~20 min" />
+            <Stat k="Start" v="0.283 kWh" />
+            <Stat k="End" v="11.419 kWh" />
+            <div className="energy-total"><div className="font-display text-4xl text-navy-deep tabular-nums">11.136</div><div className="eyebrow mt-2">kWh consumed</div></div>
           </div>
         </div>
+        <div className="energy-visuals">
+          <div className="energy-telemetry">
+            <div className="eyebrow mb-5 text-steel">Telemetry Setup</div>
+            <img src={image2} alt="Energy measurement telemetry setup" className="w-full aspect-[16/9] object-contain" loading="lazy" />
+            <p className="mt-5 text-[12px] leading-relaxed text-ink/60">
+              Logging real-time motor current draw and heating band duty cycles during operational extrusion trials.
+            </p>
+          </div>
+          <EnergyChart />
+        </div>
       </Section>
-
       {/* PUBLICATIONS */}
       <Section id="publications" eyebrow="07 — Publications" title="Peer-Reviewed Research Papers, Patents, and Technical Articles." muted>
         <div className="border-t border-border">
@@ -722,15 +663,49 @@ function Index() {
           </ol>
         </div>
 
-        <div className="mt-24 image-zoom relative">
-          <img src={conference} alt="International conference hall" className="w-full h-[280px] object-cover opacity-70" loading="lazy" />
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-deep/90 to-transparent grid place-items-start p-10">
-            <div className="max-w-md text-white">
-              <div className="eyebrow text-white/70">Countries of Practice</div>
-              <p className="mt-3 font-display text-2xl leading-snug">
-                Germany · UAE · USA · Saudi Arabia · Spain · China · Switzerland · Bahrain
-              </p>
+        <div className="global-practice">
+          <div className="global-practice-art">
+            <img src="/global-practice-cutout.webp" alt="Matte blue desktop globe on a brushed metal stand" width={1254} height={1254} loading="lazy" decoding="async" />
+            <div className="globe-flags reveal" role="group" aria-label="Countries of practice — illustrative globe pins">
+              {[
+                { name: "Germany", code: "de", x: 48, y: 24 },
+                { name: "UAE", code: "ae", x: 66, y: 43 },
+                { name: "USA", code: "us", x: 20, y: 35 },
+                { name: "Saudi Arabia", code: "sa", x: 53, y: 48 },
+                { name: "Spain", code: "es", x: 33, y: 32 },
+                { name: "China", code: "cn", x: 77, y: 32 },
+                { name: "Switzerland", code: "ch", x: 43, y: 37 },
+                { name: "Bahrain", code: "bh", x: 60, y: 30 },
+              ].map((country, index) => (
+                <button key={country.code} type="button" className="globe-flag" aria-label={country.name}
+                  style={{ left: `${country.x}%`, top: `${country.y}%`, animationDelay: `${index * 240}ms` }}>
+                  <span className="globe-pin-head"><img src={`https://flagcdn.com/w80/${country.code}.png`} alt="" width={28} height={20} loading="lazy" /></span>
+                  <span className="globe-country-name">{country.name}</span>
+                </button>
+              ))}
             </div>
+          </div>
+          <div className="global-practice-content">
+            <div className="global-practice-eyebrow">Countries of Practice</div>
+            <h3>International perspective.<br /><span>Local understanding.</span></h3>
+            <p className="globe-hint">Explore our countries of practice. Hover over or tap a flag.</p>
+            <ul className="global-practice-countries">
+              {[
+                { name: "Germany", code: "de" },
+                { name: "UAE", code: "ae" },
+                { name: "USA", code: "us" },
+                { name: "Saudi Arabia", code: "sa" },
+                { name: "Spain", code: "es" },
+                { name: "China", code: "cn" },
+                { name: "Switzerland", code: "ch" },
+                { name: "Bahrain", code: "bh" },
+              ].map((country) => (
+                <li key={country.code}>
+                  <img src={`https://flagcdn.com/w80/${country.code}.png`} alt="" width={32} height={24} loading="lazy" />
+                  <span>{country.name}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </Section>
@@ -803,8 +778,8 @@ function Index() {
         <div className="relative container-x py-28 md:py-40 grid lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-8 reveal">
             <div className="eyebrow text-white/60 mb-6">Ready to engage</div>
-            <h2 className="font-display text-4xl md:text-6xl font-light leading-[1.05] tracking-tight">
-              Need expert guidance for your polymer manufacturing process?
+            <h2 className="font-display text-4xl md:text-6xl font-semibold leading-[1.15] tracking-tight text-balance">
+              Need <span className="keyword-accent keyword-accent--dark">expert guidance</span> for your polymer manufacturing process?
             </h2>
             <p className="mt-8 max-w-2xl text-[16px] leading-[1.8] text-white/70">
               Whether you're optimising production, improving material performance, troubleshooting manufacturing issues,
@@ -881,10 +856,10 @@ function Index() {
       <footer className="bg-ink text-white/70">
         <div className="container-x py-16 grid md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
-            <div className="flex items-center gap-3">
-              {/* <span className="h-8 w-8 grid place-items-center bg-white text-navy-deep font-display text-sm font-semibold">Z</span> */}
+            <a href="#top" aria-label="Zainab Polymer Consulting Services — home" className="inline-flex flex-col items-start gap-4 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4">
+              <BrandLogo prominent />
               <span className="font-display text-white text-lg">Zainab Polymer Consulting Services</span>
-            </div>
+            </a>
             <p className="mt-5 max-w-md text-[13.5px] leading-[1.8]">
               Independent consulting practice in polyolefin technology, polymer science and plastics manufacturing —
               led by Engr. Neaz Ahmed.
@@ -922,7 +897,16 @@ function Index() {
 
       {/* LIGHTBOX MODAL */}
       {selectedImgIdx !== null && (
-        <div className="fixed inset-0 z-[100] flex flex-col justify-between bg-navy-deep/98 backdrop-blur-md text-white p-4 md:p-8 animate-fade-in">
+        <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Technical diagram viewer" tabIndex={-1} data-lenis-prevent
+          onKeyDown={(event) => {
+            if (event.key !== "Tab") return;
+            const buttons = dialogRef.current?.querySelectorAll<HTMLButtonElement>("button");
+            if (!buttons?.length) return;
+            const first = buttons[0], last = buttons[buttons.length - 1];
+            if (event.shiftKey && (document.activeElement === first || document.activeElement === dialogRef.current)) { event.preventDefault(); last.focus(); }
+            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+          }}
+          className="fixed inset-0 z-[100] flex flex-col justify-between overflow-y-auto bg-navy-deep/98 text-white p-4 md:p-8">
           {/* Top Bar */}
           <div className="flex items-center justify-between border-b border-white/10 pb-4">
             <div>
@@ -989,112 +973,61 @@ function Index() {
 
 function ExpertiseSection() {
   return (
-    <div className="relative expertise-grid-bg rounded-sm border border-white/10 p-6 md:p-10 lg:p-12">
-      <div className="grid lg:grid-cols-3 gap-8 lg:gap-6 xl:gap-10">
-        {EXPERTISE_PILLARS.map((pillar, pillarIdx) => {
-          const Icon = pillar.icon;
-          return (
-            <div
-              key={pillar.id}
-              className="expertise-pillar flex flex-col reveal"
-              style={{ transitionDelay: `${pillarIdx * 120}ms` }}
-            >
-              {/* Pillar header */}
-              <div className="mb-8 pb-8 border-b border-white/10">
-                <div className="flex items-start gap-4">
-                  <div className="expertise-icon shrink-0 h-12 w-12 rounded-sm border border-white/15 bg-white/5 grid place-items-center text-gold">
-                    <Icon size={22} strokeWidth={1.5} />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-[11px] tracking-[0.28em] uppercase text-white/45 font-medium">
-                      Pillar {String(pillarIdx + 1).padStart(2, "0")}
-                    </div>
-                    <h3 className="mt-2 font-display text-2xl text-white leading-tight">{pillar.label}</h3>
-                  </div>
-                </div>
-                <p className="mt-4 text-[14px] leading-relaxed text-white/55">{pillar.summary}</p>
-                <div className="mt-5 flex items-center gap-3">
-                  <span className="h-px flex-1 bg-gradient-to-r from-gold/60 to-transparent" />
-                  <span className="text-[11px] tracking-[0.2em] uppercase text-white/40 tabular-nums">
-                    {pillar.items.length} disciplines
-                  </span>
-                </div>
-              </div>
-
-              {/* Cards */}
-              <div className="flex flex-col gap-3 flex-1">
-                {pillar.items.map((item, itemIdx) => (
-                  <div
-                    key={item.t}
-                    className="group expertise-card rounded-sm p-5 md:p-6 reveal"
-                    style={{ transitionDelay: `${pillarIdx * 120 + itemIdx * 50}ms` }}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-3">
-                          <span className="text-[11px] tracking-[0.2em] uppercase text-white/35 tabular-nums font-medium">
-                            {String(itemIdx + 1).padStart(2, "0")}
-                          </span>
-                          <span className="h-px w-4 bg-white/15 transition-all duration-500 group-hover:w-8 group-hover:bg-gold/50" />
-                        </div>
-                        <h4 className="mt-3 font-display text-[19px] md:text-xl text-white leading-snug group-hover:text-white transition-colors">
-                          {item.t}
-                        </h4>
-                        <p className="mt-2.5 text-[13.5px] leading-[1.65] text-white/55 group-hover:text-white/70 transition-colors duration-500">
-                          {item.d}
-                        </p>
-                      </div>
-                      <div className="expertise-icon shrink-0 mt-1 h-8 w-8 rounded-sm border border-white/10 bg-white/5 grid place-items-center text-white/40 group-hover:border-gold/40 group-hover:bg-gold/10 group-hover:text-gold group-hover:scale-110 group-hover:-rotate-3">
-                        <ArrowUpRight size={14} strokeWidth={1.75} />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-
-                {pillar.id === "advisory" && (
-                  <a
-                    href="#contact"
-                    className="group expertise-card rounded-sm p-5 md:p-6 flex-1 flex flex-col justify-center reveal border-dashed"
-                    style={{ transitionDelay: `${pillarIdx * 120 + pillar.items.length * 50}ms` }}
-                  >
-                    <div className="text-[11px] tracking-[0.2em] uppercase text-gold/80 font-medium">Custom scope</div>
-                    <p className="mt-3 font-display text-lg text-white leading-snug">
-                      Every engagement is tailored to your product and process.
-                    </p>
-                    <div className="mt-4 inline-flex items-center gap-2 text-[12px] tracking-[0.15em] uppercase text-white/60 group-hover:text-gold transition-colors">
-                      Start a conversation
-                      <ArrowUpRight size={13} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                    </div>
-                  </a>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Bottom CTA strip */}
-      <div className="mt-10 pt-8 border-t border-white/10 reveal" style={{ transitionDelay: "420ms" }}>
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div>
-            <p className="font-display text-xl md:text-2xl text-white leading-snug">
-              Fourteen disciplines. One integrated practice.
-            </p>
-            <p className="mt-2 text-[14px] text-white/50 max-w-xl">
-              Engagements are scoped to your product, process, and commercial objectives — from single-issue troubleshooting to full program support.
-            </p>
+    <div className="practice-list">
+      {EXPERTISE_PILLARS.map((pillar, pillarIdx) => (
+        <div key={pillar.id} className="practice-row">
+          <div className="practice-heading">
+            <div className="practice-kicker">Pillar {String(pillarIdx + 1).padStart(2, "0")}</div>
+            <h3>{pillar.label}</h3>
+            <p>{pillar.summary}</p>
+            <span className="practice-count">{pillar.items.length} disciplines</span>
           </div>
-          <a
-            href="#contact"
-            className="group inline-flex shrink-0 items-center gap-3 bg-gold text-navy-deep px-7 py-4 text-[12px] tracking-[0.18em] uppercase font-semibold hover:bg-white transition-all duration-300"
-          >
-            Discuss your challenge
-            <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </a>
+          <div className="practice-services">
+            {pillar.items.map((item, itemIdx) => (
+              <div key={item.t} className="practice-service">
+                <span className="practice-index">{String(itemIdx + 1).padStart(2, "0")}</span>
+                <div><h4>{item.t}</h4><p>{item.d}</p></div>
+              </div>
+            ))}
+            {pillar.id === "advisory" && (
+              <a href="#contact" className="practice-custom">
+                <span className="practice-kicker">Custom scope</span>
+                <p>Every engagement is tailored to your product and process.</p>
+                <span className="practice-link">Start a conversation <ArrowUpRight size={16} aria-hidden="true" /></span>
+              </a>
+            )}
+          </div>
         </div>
+      ))}
+      <div className="practice-outro">
+        <div>
+          <p className="practice-outro-title">Fourteen disciplines. One integrated practice.</p>
+          <p className="practice-outro-description">Engagements are scoped to your product, process, and commercial objectives — from single-issue troubleshooting to full program support.</p>
+        </div>
+        <a href="#contact" className="practice-button">Discuss your challenge <ArrowUpRight size={18} aria-hidden="true" /></a>
       </div>
     </div>
   );
+}
+const SECTION_KEYWORDS: Record<string, string> = {
+  about: "Scientific Polymer Research",
+  expertise: "Deep Engineering Competency",
+  industries: "Technical Advisory",
+  manufacturing: "Injection Molding, Extrusion",
+  technology: "Process Engineering",
+  energy: "Efficiency",
+  publications: "Peer-Reviewed Research",
+  conferences: "Four Continents",
+  why: "Technical Partnership",
+  honors: "Professional Affiliations",
+  contact: "High-Value Engagement",
+};
+
+function SectionTitle({ title, id, dark }: { title: string; id: string; dark?: boolean }) {
+  const keyword = SECTION_KEYWORDS[id];
+  const start = keyword ? title.indexOf(keyword) : -1;
+  if (start < 0) return <>{title}</>;
+  return <>{title.slice(0, start)}<span className={"keyword-accent" + (dark ? " keyword-accent--dark" : "")}>{keyword}</span>{title.slice(start + keyword.length)}</>;
 }
 
 function Section({
@@ -1104,12 +1037,12 @@ function Section({
     <section
       id={id}
       className={
-        "relative py-24 md:py-32 " +
+        "relative section-spacing " +
         (dark ? "bg-navy-deep text-white" : muted ? "bg-mist text-ink" : "bg-background text-ink")
       }
     >
       <div className="container-x">
-        <div className="grid lg:grid-cols-12 gap-10 mb-16 md:mb-20 items-end reveal">
+        <div className="section-heading grid lg:grid-cols-12 items-end reveal">
           <div className="lg:col-span-5">
             <div className="flex items-center gap-3">
               <span className="h-[2px] w-6 bg-gold shrink-0" />
@@ -1119,8 +1052,8 @@ function Section({
             </div>
           </div>
           <div className="lg:col-span-7">
-            <h2 className={"font-display text-3xl md:text-[44px] lg:text-[52px] font-normal leading-[1.1] tracking-tight " + (dark ? "text-white" : "text-ink")}>
-              {title}
+            <h2 className={"font-display text-3xl md:text-[40px] lg:text-[46px] font-semibold leading-[1.18] tracking-tight text-balance " + (dark ? "text-white" : "text-ink")}>
+              <SectionTitle title={title} id={id} dark={dark} />
             </h2>
           </div>
         </div>
