@@ -596,3 +596,117 @@ html.lenis { scroll-behavior: auto; }
   .section-spacing { padding-block: 80px; }
   .section-heading { column-gap: 40px; margin-bottom: 48px; }
 }
+
+/* Advisory principles */
+.advisory-section { background: var(--mist); color: var(--navy-deep); }
+.advisory-heading { display: grid; grid-template-columns: 1fr 2fr; gap: 48px; align-items: start; margin-bottom: 48px; }
+.advisory-eyebrow { display: flex; align-items: center; gap: 12px; padding-top: 10px; font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; }
+.advisory-eyebrow::before { content: ""; width: 24px; height: 2px; flex-shrink: 0; background: var(--gold); }
+.advisory-heading h2 { font-size: clamp(30px, 3.2vw, 46px); font-weight: 500; line-height: 1.2; letter-spacing: -.035em; text-wrap: initial; }
+.advisory-heading h2 span { color: oklch(0.46 0.16 255); }
+.advisory-heading-copy > p { max-width: 560px; margin-top: 20px; font-size: 15px; line-height: 1.8; color: var(--steel); }
+.advisory-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 48px; }
+.advisory-foundation { display: flex; flex-direction: column; justify-content: space-between; gap: 48px; padding: 36px; background: var(--navy-deep); color: white; }
+.advisory-foundation-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; color: oklch(0.8 0.06 245); }
+.advisory-foundation-top span { font-size: 10px; letter-spacing: .15em; text-transform: uppercase; }
+.advisory-rule { display: block; height: 2px; width: 36px; margin-bottom: 24px; background: var(--gold); }
+.advisory-foundation h3 { font-size: clamp(28px, 2.6vw, 38px); font-weight: 500; line-height: 1.15; letter-spacing: -.025em; }
+.advisory-foundation-copy p { margin-top: 20px; font-size: 15px; line-height: 1.85; color: oklch(0.86 0.015 250); }
+.advisory-foundation-note { padding-top: 24px; border-top: 1px solid oklch(1 0 0 / 20%); font-size: 12px; line-height: 1.8; color: oklch(0.8 0.06 245); }
+.advisory-principles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 36px; }
+.advisory-principle { display: flex; gap: 16px; padding: 28px 0; border-top: 1px solid var(--silver); }
+.advisory-number { padding-top: 4px; flex-shrink: 0; font-size: 11px; font-weight: 500; color: oklch(0.46 0.16 255); font-variant-numeric: tabular-nums; }
+.advisory-principle h3 { font-size: 19px; font-weight: 600; line-height: 1.4; letter-spacing: -.02em; text-wrap: initial; }
+.advisory-principle p { margin-top: 12px; font-size: 14px; line-height: 1.8; color: var(--steel); }
+@media (max-width: 1023px) {
+  .advisory-heading { grid-template-columns: 1fr; gap: 24px; }
+  .advisory-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr); gap: 28px; }
+  .advisory-foundation { padding: 28px; }
+  .advisory-principles { column-gap: 24px; }
+  .advisory-principle { display: block; }
+  .advisory-number { display: block; margin-bottom: 12px; }
+}
+@media (max-width: 767px) {
+  .advisory-heading { margin-bottom: 32px; }
+  .advisory-layout { grid-template-columns: 1fr; gap: 32px; }
+  .advisory-foundation { gap: 32px; }
+  .advisory-foundation-copy { max-width: 460px; }
+  .advisory-principle { padding-block: 24px; }
+}
+@media (max-width: 479px) {
+  .advisory-principles { grid-template-columns: 1fr; }
+  .advisory-principle { display: flex; gap: 20px; }
+  .advisory-number { margin-bottom: 0; }
+}
+
+/* A slow blue highlight travels around the consultation form. */
+@property --consultation-border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.consultation-form {
+  --consultation-border-angle: 0deg;
+  min-width: 0;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: linear-gradient(white, white) padding-box,
+    conic-gradient(from var(--consultation-border-angle), #dce7f3 0%, #dce7f3 65%, #88c5f1 78%, #005eb8 88%, #dce7f3 100%) border-box;
+  box-shadow: 0 12px 40px -24px rgb(0 94 184 / 24%);
+  animation: consultation-border-orbit 10s linear infinite;
+  transition: box-shadow 250ms ease;
+}
+.consultation-form:focus-within {
+  box-shadow: 0 12px 44px -20px rgb(0 94 184 / 32%);
+}
+.consultation-form input, .consultation-form textarea {
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+.consultation-form input:focus, .consultation-form textarea:focus {
+  border-bottom-color: #005eb8;
+  box-shadow: 0 1px 0 #005eb8;
+}
+.consultation-form button[type="submit"] {
+  background: #005eb8;
+  border-radius: 4px;
+  transition: background 200ms ease, box-shadow 200ms ease;
+}
+.consultation-form button[type="submit"]:hover {
+  background: #004b94;
+  box-shadow: 0 6px 18px -8px rgb(0 94 184 / 50%);
+}
+.consultation-form button[type="submit"]:focus-visible {
+  outline: 2px solid #005eb8;
+  outline-offset: 4px;
+}
+@keyframes consultation-border-orbit {
+  to { --consultation-border-angle: 360deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .consultation-form { animation: none; --consultation-border-angle: 135deg; transition: none; }
+  .consultation-form input, .consultation-form textarea, .consultation-form button[type="submit"] { transition: none; }
+}
+
+/* A distinct, compact corporate wordmark for the navigation. */
+.navbar-brand-name {
+  font-family: "Manrope", "IBM Plex Sans", sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.navbar-brand-descriptor {
+  margin-top: 6px;
+  font-family: "Manrope", "IBM Plex Sans", sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  opacity: .8;
+}
+@media (max-width: 359px) {
+  .navbar-brand-name { font-size: 23px; }
+  .navbar-brand-descriptor { font-size: 8px; letter-spacing: .14em; }
+}

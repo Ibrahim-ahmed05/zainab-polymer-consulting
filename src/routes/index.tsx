@@ -196,10 +196,10 @@ const HONORS_ACADEMIC = [
 ];
 
 const TIMELINE = [
-  { y: "1984", h: "B.E. Mechanical Engineering", s: "N.E.D. University of Engineering and Technology, Karachi" },
+  { y: "1980–1984", h: "B.E. Mechanical Engineering", s: "N.E.D. University of Engineering and Technology, Karachi" },
   { y: "1984–1990", h: "Engineering Design (Mechanical Equipment)", s: "Karachi Shipyard and Engineering Works" },
-  { y: "1993", h: "M.S. Mechanical Engineering", s: "King Fahd University of Petroleum and Minerals — Design Dynamics and Control" },
-  { y: "1998–2014", h: "Industrial R&D and Consultancy", s: "Polyolefin research, stabilization, and commercial process optimization across the Gulf" },
+  { y: "1990–1993", h: "M.S. Mechanical Engineering", s: "King Fahd University of Petroleum and Minerals — Design Dynamics and Control" },
+  { y: "1993–2014", h: "Industrial R&D and Consultancy", s: "Polyolefin research, stabilization, and commercial process optimization across the Gulf" },
   { y: "Today", h: "Zainab Polymer Consulting Services", s: "Independent consultancy for manufacturers and research centers worldwide" },
 ];
 
@@ -324,8 +324,8 @@ function Index() {
           <a href="#top" aria-label="Zainab Polymer Consulting Services — home" className="flex shrink-0 items-center gap-3 group rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4">
             <BrandLogo />
             <span className={"flex flex-col leading-none transition-colors duration-500 " + (scrolled ? "text-navy-deep" : "text-white")}>
-              <span className="font-display text-[23px] font-normal tracking-[0.15em] uppercase">Zainab</span>
-              <span className="text-[10px] tracking-[0.28em] uppercase opacity-70">Polymer Consulting</span>
+              <span className="navbar-brand-name">Zainab</span>
+              <span className="navbar-brand-descriptor">Polymer Consulting</span>
             </span>
           </a>
 
@@ -405,7 +405,7 @@ function Index() {
                 { n: 30, s: "+", l: "Years of industry experience" },
                 { n: 20, s: "+", l: "International conferences" },
                 { n: 10, s: "+", l: "Publications & proceedings" },
-                { n: 8, s: "", l: "Countries of practice" },
+                { n: 16, s: "", l: "Countries of practice" },
               ].map((k) => (
                 <div key={k.l} className="consulting-hero__stat">
                   <div className="consulting-hero__number"><Counter to={k.n} suffix={k.s} /></div>
@@ -543,17 +543,17 @@ function Index() {
             </p>
           </div>
           <div className="lg:col-span-5 reveal">
-            <div className="border border-border p-8 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.02)]">
+            <div className="border border-border p-5 sm:p-8 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.02)]">
               <div className="eyebrow mb-4">Case in brief — Small-Box PP Trial</div>
               <p className="text-[14px] text-ink/70 leading-relaxed">
                 Revised barrel-zone temperatures on a PP small-box trial (Z1–Z5: 205 · 220 · 235 · 240 · 240 °C) reduced
                 energy consumption without affecting the performance or quality of the final products.
               </p>
-              <div className="mt-6 grid grid-cols-5 gap-2">
+              <div className="mt-6 grid grid-cols-5 gap-1 sm:gap-2" data-temperature-zones>
                 {[205, 220, 235, 240, 240].map((v, i) => (
-                  <div key={i} className="border border-border p-3 text-center bg-mist/30">
+                  <div key={i} className="min-w-0 border border-border px-1 py-3 text-center bg-mist/30">
                     <div className="eyebrow text-[10px]">Z{i + 1}</div>
-                    <div className="mt-1 font-display text-lg font-medium text-navy-deep tabular-nums">{v}°</div>
+                    <div className="mt-1 whitespace-nowrap font-display text-base sm:text-lg font-medium text-navy-deep tabular-nums">{v}°</div>
                   </div>
                 ))}
               </div>
@@ -676,6 +676,14 @@ function Index() {
                 { name: "China", code: "cn", x: 77, y: 32 },
                 { name: "Switzerland", code: "ch", x: 43, y: 37 },
                 { name: "Bahrain", code: "bh", x: 60, y: 30 },
+                { name: "Italy", code: "it", x: 38, y: 49 },
+                { name: "Greece", code: "gr", x: 46, y: 59 },
+                { name: "Turkey", code: "tr", x: 70, y: 57 },
+                { name: "Qatar", code: "qa", x: 60, y: 64 },
+                { name: "UK", code: "gb", x: 29, y: 20 },
+                { name: "Belgium", code: "be", x: 38, y: 17 },
+                { name: "France", code: "fr", x: 24, y: 49 },
+                { name: "Singapore", code: "sg", x: 80, y: 47 },
               ].map((country, index) => (
                 <button key={country.code} type="button" className="globe-flag" aria-label={country.name}
                   style={{ left: `${country.x}%`, top: `${country.y}%`, animationDelay: `${index * 240}ms` }}>
@@ -699,6 +707,14 @@ function Index() {
                 { name: "China", code: "cn" },
                 { name: "Switzerland", code: "ch" },
                 { name: "Bahrain", code: "bh" },
+                { name: "Italy", code: "it" },
+                { name: "Greece", code: "gr" },
+                { name: "Turkey", code: "tr" },
+                { name: "Qatar", code: "qa" },
+                { name: "UK", code: "gb" },
+                { name: "Belgium", code: "be" },
+                { name: "France", code: "fr" },
+                { name: "Singapore", code: "sg" },
               ].map((country) => (
                 <li key={country.code}>
                   <img src={`https://flagcdn.com/w80/${country.code}.png`} alt="" width={32} height={24} loading="lazy" />
@@ -711,22 +727,36 @@ function Index() {
       </Section>
 
       {/* WHY US */}
-      <Section id="why" eyebrow="09 — Advisory Principles" title="Core Pillars of Our Technical Partnership & Consulting Value." muted>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {WHY.map((w, i) => (
-            <div key={w.t} className="group bg-white border border-border p-8 lift-card reveal" style={{ transitionDelay: `${(i % 3) * 60}ms` }}>
-              <div className="flex items-center justify-between">
-                <div className="font-display text-navy-deep/50 tabular-nums">{String(i + 1).padStart(2, "0")}</div>
-                <div className="h-8 w-8 rounded-full border border-border grid place-items-center text-steel group-hover:bg-navy-deep group-hover:text-white group-hover:border-navy-deep transition-all">
-                  <span className="text-[11px]">✓</span>
-                </div>
-              </div>
-              <h3 className="mt-6 font-display text-xl text-ink">{w.t}</h3>
-              <p className="mt-3 text-[14px] leading-[1.7] text-ink/65">{w.d}</p>
+      <section id="why" className="advisory-section section-spacing" aria-labelledby="advisory-title">
+        <div className="container-x">
+          <div className="advisory-heading">
+            <div className="advisory-eyebrow">09 — Advisory Principles</div>
+            <div className="advisory-heading-copy">
+              <h2 id="advisory-title" className="font-display">The foundations of a<br className="hidden md:block" /> <span>trusted technical partnership.</span></h2>
+              <p>Scientific thinking. Industrial understanding. A considered approach to every polymer challenge.</p>
             </div>
-          ))}
+          </div>
+          <div className="advisory-layout">
+            <article className="advisory-foundation">
+              <div className="advisory-foundation-top"><span>01 / Our foundation</span><Beaker size={26} strokeWidth={1.3} aria-hidden="true" /></div>
+              <div className="advisory-foundation-copy">
+                <span className="advisory-rule" aria-hidden="true" />
+                <h3 className="font-display">{WHY[0].t}</h3>
+                <p>{WHY[0].d}</p>
+              </div>
+              <div className="advisory-foundation-note">Evidence-led thinking.<br />Practical, informed decisions.</div>
+            </article>
+            <div className="advisory-principles">
+              {WHY.slice(1).map((w, i) => (
+                <article key={w.t} className="advisory-principle">
+                  <span className="advisory-number">{String(i + 2).padStart(2, "0")}</span>
+                  <div><h3 className="font-display">{w.t}</h3><p>{w.d}</p></div>
+                </article>
+              ))}
+            </div>
+          </div>
         </div>
-      </Section>
+      </section>
 
       {/* HONORS */}
       <Section id="honors" eyebrow="10 — Credentials" title="Professional Affiliations & High-Value Academic Honors.">
@@ -807,7 +837,7 @@ function Index() {
             {[
               { k: "Email", v: "consult@zainabpolymer.com" },
               { k: "Phone", v: "Available upon request" },
-              { k: "Base", v: "Karachi, Pakistan · Serving clients globally" },
+              { k: "Base", v: "Bahria Town, Karachi, Pakistan · Serving clients globally" },
               { k: "LinkedIn", v: "Available upon request" },
               { k: "Business Hours", v: "Mon – Sat · 9:00 – 18:00 (PKT)" },
             ].map((r) => (
@@ -816,16 +846,31 @@ function Index() {
                 <div className="mt-2 text-[15px] text-ink/85">{r.v}</div>
               </div>
             ))}
-            <div className="aspect-[16/9] bg-mist border border-border grid place-items-center">
-              <div className="text-center text-steel">
-                <div className="eyebrow">Map</div>
-                <div className="mt-2 text-[13px]">Location shared during engagement</div>
+            <div className="overflow-hidden bg-mist border border-border">
+              <iframe
+                title="Map of Bahria Town, Karachi, Pakistan"
+                src="https://www.google.com/maps?q=Bahria+Town+Karachi+Pakistan&z=13&output=embed"
+                className="block aspect-[4/3] sm:aspect-[16/9] w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+              <div className="border-t border-border bg-white p-4">
+                <div className="text-[14px] font-medium text-navy-deep">Bahria Town, Karachi</div>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=Bahria+Town+Karachi+Pakistan"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-flex items-center gap-2 text-[13px] text-steel hover:text-navy-deep focus-visible:outline-2 focus-visible:outline-offset-4"
+                >
+                  Open in Google Maps <ArrowUpRight size={14} aria-hidden="true" />
+                </a>
               </div>
             </div>
           </div>
 
           <form
-            className="lg:col-span-7 reveal border border-border p-8 md:p-12 bg-white"
+            className="consultation-form lg:col-span-7 reveal p-6 sm:p-8 md:p-12"
             onSubmit={(e) => { e.preventDefault(); alert("Thank you. We will respond within one business day."); }}
           >
             <div className="eyebrow">Request a consultation</div>
