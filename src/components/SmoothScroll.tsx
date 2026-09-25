@@ -1,7 +1,10 @@
 import { useEffect } from "react";
+import { useRouterState } from "@tanstack/react-router";
 
 export function SmoothScroll() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
   useEffect(() => {
+    if (pathname.startsWith("/admin")) return;
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
     let disposed = false;
     let destroy: (() => void) | undefined;
@@ -11,7 +14,12 @@ export function SmoothScroll() {
       if (preference.matches) return;
       const { default: Lenis } = await import("lenis");
       if (disposed || preference.matches || destroy) return;
-      const lenis = new Lenis({ autoRaf: true, duration: 0.85, anchors: { offset: -104 }, syncTouch: false });
+      const lenis = new Lenis({
+        autoRaf: true,
+        duration: 0.85,
+        anchors: { offset: -104 },
+        syncTouch: false,
+      });
       let stopped = false;
       const observer = new MutationObserver(() => {
         const modalOpen = !!document.querySelector('[aria-modal="true"]');
@@ -21,11 +29,18 @@ export function SmoothScroll() {
         else lenis.start();
       });
       observer.observe(document.body, { childList: true, subtree: true });
-      destroy = () => { observer.disconnect(); lenis.destroy(); };
+      destroy = () => {
+        observer.disconnect();
+        lenis.destroy();
+      };
     };
     void configure();
     preference.addEventListener("change", configure);
-    return () => { disposed = true; destroy?.(); preference.removeEventListener("change", configure); };
-  }, []);
+    return () => {
+      disposed = true;
+      destroy?.();
+      preference.removeEventListener("change", configure);
+    };
+  }, [pathname]);
   return null;
 }

@@ -6,7 +6,8 @@ import heroPlant from "@/assets/hero-plant.webp";
 import pellets from "@/assets/pellets.webp";
 import lab from "@/assets/lab.webp";
 import extrusion from "@/assets/extrusion.webp";
-import consultant from "@/assets/founder.webp";
+import { getPublishedContent } from "@/lib/cms";
+import { contentSchema, type SiteContent } from "@/lib/content-schema";
 import films from "@/assets/films.webp";
 import engel from "@/assets/engel-tradeshow.webp";
 import thermoformingChain from "@/assets/thermoforming-chain.webp";
@@ -20,12 +21,13 @@ import image4 from "@/assets/image4.webp";
 import image5 from "@/assets/image5.webp";
 
 export const Route = createFileRoute("/")({
+  loader: () => getPublishedContent(),
   component: Index,
 });
 
 /* ----------------------------- helpers ----------------------------- */
 
-function useReveal() {
+function useReveal(content: SiteContent) {
   useEffect(() => {
     const els = document.querySelectorAll(".reveal");
     const io = new IntersectionObserver(
@@ -41,7 +43,7 @@ function useReveal() {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  }, [content]);
 }
 
 function useScrolled(threshold = 40) {
@@ -148,28 +150,9 @@ const INDUSTRIES = [
 ];
 function hero(x: string) { return x; }
 
-const WHY = [
-  { t: "Scientific Rigor", d: "Research-driven recommendations backed by analytical data, not intuition." },
-  { t: "Industry Experience", d: "Decades inside commercial polyolefin operations across the Middle East and Asia." },
-  { t: "Research-Based Solutions", d: "Peer-reviewed methodology applied to real production constraints." },
-  { t: "Customized Consulting", d: "Every engagement is scoped to the client's product, process, and economics." },
-  { t: "Confidentiality", d: "Discreet, professional partnership protecting client intellectual property." },
-  { t: "Practical Depth", d: "Plant-floor troubleshooting experience across injection molding and extrusion." },
-  { t: "International Exposure", d: "Continuous participation in the world's leading polymer conferences." },
-];
 
-const PUBLICATIONS = [
-  { y: "2014", title: "Regulatory compliance of Products", where: "Xpressions, Xenel Group Magazine, 26th Issue, pp. 29–31", authors: "N. Ahmed, A. Karimi, F. Tamim" },
-  { y: "2013", title: "Polypropylene — the material of choice", where: "Xpressions, Xenel Group Magazine, 22nd Issue, pp. 14–17", authors: "N. Ahmed" },
-  { y: "2012", title: "Plastics and environment", where: "Xpressions, Xenel Group Magazine, 17th Issue, pp. 20–21", authors: "N. Ahmed" },
-  { y: "2007", title: "Effect of weathering and reprocessing on recycled HDPE", where: "7th International Conference on Chemistry in Industry, Mar 23–25", authors: "N. Ahmed, M. N. Akhtar" },
-  { y: "2006", title: "Recycling of HDPE bottle crates using the re-stabilization technique", where: "5th Middle East Refining & Petrochemicals Conference (PETROTECH), Jan 16–18", authors: "M. N. Akhtar, N. Ahmed" },
-  { y: "2002", title: "Effect of recycling of thermoplastics: virgin & recycled HDPE mixtures", where: "Proceedings of the 6th Saudi Engineering Conference, Vol. 2, pp. 359–368", authors: "N. Ahmed, J. H. Khan" },
-  { y: "2001", title: "Photo-oxidative degradation of recycled HDPE: chemical, thermal and mechanical property changes", where: "J. Mater. Sci. and Tech., Vol. 9, No. 3, pp. 153–164", authors: "J. H. Khan, N. Ahmed" },
-  { y: "1999", title: "Thermal, Chemical and Mechanical Property Evaluation of Recycled-Reprocessed HDPE", where: "J. Polym. Mater., Vol. 16, pp. 341–345", authors: "N. Ahmed, J. H. Khan, I. Hussain, S. H. Hamid" },
-  { y: "1999", title: "Performance Evaluation of New Chemical Soil Stabilizers", where: "Proceedings of the 5th Saudi Engineering Conference, Vol. 3, pp. 215–226", authors: "S. M. Lahalih, N. Ahmed" },
-  { y: "1998", title: "Effect of New Soil Additives on the Compressive Strength of Dune Sands", where: "Construction and Building Materials, Vol. 12, No. 7, pp. 321–328", authors: "S. M. Lahalih, N. Ahmed" },
-];
+
+
 
 const CONFERENCES = [
   { y: "2015", items: ["Arabplast, Dubai — UAE"] },
@@ -195,13 +178,7 @@ const HONORS_ACADEMIC = [
   { t: "Merit Scholarship", org: "Comilla Zila School", note: "Early-career academic distinction" },
 ];
 
-const TIMELINE = [
-  { y: "1980–1984", h: "B.E. Mechanical Engineering", s: "N.E.D. University of Engineering and Technology, Karachi" },
-  { y: "1984–1990", h: "Engineering Design (Mechanical Equipment)", s: "Karachi Shipyard and Engineering Works" },
-  { y: "1990–1993", h: "M.S. Mechanical Engineering", s: "King Fahd University of Petroleum and Minerals — Design Dynamics and Control" },
-  { y: "1993–2014", h: "Industrial R&D and Consultancy", s: "Polyolefin research, stabilization, and commercial process optimization across the Gulf" },
-  { y: "Today", h: "Zainab Polymer Consulting Services", s: "Independent consultancy for manufacturers and research centers worldwide" },
-];
+
 
 const TECH_LIBRARY = [
   {
@@ -265,7 +242,27 @@ const TECH_LIBRARY = [
 /* ----------------------------- component ----------------------------- */
 
 function Index() {
-  useReveal();
+  const published = Route.useLoaderData();
+  const [preview, setPreview] = useState<SiteContent | null>(null);
+  useEffect(() => {
+    if (window.parent === window || new URLSearchParams(window.location.search).get("preview") !== "1") return;
+    const receive = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin || event.source !== window.parent || event.data?.type !== "site-preview") return;
+      const parsed = contentSchema.safeParse(event.data.content);
+      if (parsed.success) setPreview(parsed.data);
+    };
+    window.addEventListener("message", receive);
+    window.parent.postMessage({ type: "site-preview-ready" }, window.location.origin);
+    return () => window.removeEventListener("message", receive);
+  }, []);
+  return <Website content={preview ?? published} />;
+}
+
+export function Website({ content }: { content: SiteContent }) {
+  useReveal(content);
+  const WHY = content.principles;
+  const TIMELINE = content.timeline;
+  const PUBLICATIONS = content.publications;
   const scrolled = useScrolled(30);
   const [open, setOpen] = useState(false);
   const [techTab, setTechTab] = useState<"all" | "science" | "process">("all");
@@ -387,14 +384,13 @@ function Index() {
 
       {/* HERO */}
       <section id="top" className="consulting-hero">
-        <img src="/polymer-hero.webp" alt="Blue and clear polymer pellets spilling from a glass vessel" className="consulting-hero__image" fetchPriority="high" />
+        <img src={content.home.image} alt="Blue and clear polymer pellets spilling from a glass vessel" className="consulting-hero__image" fetchPriority="high" />
         <div className="consulting-hero__shade" />
         <div className="container-x consulting-hero__inner">
           <div className="consulting-hero__copy">
-            <p className="consulting-hero__eyebrow">Est. 1993 · Global Practice</p>
-            <h1 className="consulting-hero__title">Polyolefin technology<br className="hidden md:block" /> and plastics manufacturing <span>consultancy.</span></h1>
+            <h1 className="consulting-hero__title">{content.home.title} <span>{content.home.accent}</span></h1>
             <p className="consulting-hero__description">
-              Helping manufacturers improve <strong>polymer performance</strong>, <strong>production efficiency</strong>, product quality and long-term process reliability — through three decades of industrial expertise led by Engr. Neaz Ahmed.
+              {content.home.description}
             </p>
             <div className="consulting-hero__actions">
               <a href="#contact" className="consulting-hero__primary">Book a Consultation <span aria-hidden="true">→</span></a>
@@ -402,10 +398,10 @@ function Index() {
             </div>
             <div className="consulting-hero__stats">
               {[
-                { n: 30, s: "+", l: "Years of industry experience" },
-                { n: 20, s: "+", l: "International conferences" },
-                { n: 10, s: "+", l: "Publications & proceedings" },
-                { n: 16, s: "", l: "Countries of practice" },
+                { n: content.home.years, s: "+", l: "Years of industry experience" },
+                { n: content.home.conferences, s: "+", l: "International conferences" },
+                { n: content.home.publications, s: "+", l: "Publications & proceedings" },
+                { n: content.countries.length, s: "", l: "Countries of practice" },
               ].map((k) => (
                 <div key={k.l} className="consulting-hero__stat">
                   <div className="consulting-hero__number"><Counter to={k.n} suffix={k.s} /></div>
@@ -423,18 +419,18 @@ function Index() {
         <div className="grid lg:grid-cols-12 gap-14 items-start">
           <div className="lg:col-span-5 reveal flex flex-col gap-6 lg:self-stretch">
             <div className="image-zoom relative aspect-[4/5] shrink-0 bg-mist">
-              <img src={consultant} alt="Engr. Neaz Ahmed in industrial environment" className="h-full w-full object-cover" loading="lazy" />
+              <img src={content.profile.image} alt={content.profile.name} className="h-full w-full object-cover" loading="lazy" />
               <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-navy-deep/90 to-transparent">
                 <div className="text-white">
-                  <div className="font-display text-xl">Engr. Neaz Ahmed</div>
-                  <div className="text-[11px] tracking-[0.22em] uppercase text-white/70 mt-1">Founder & Principal Consultant</div>
+                  <div className="font-display text-xl">{content.profile.name}</div>
+                  <div className="text-[11px] tracking-[0.22em] uppercase text-white/70 mt-1">{content.profile.role}</div>
                 </div>
               </div>
             </div>
             <div className="relative aspect-[3/2] overflow-hidden bg-mist lg:flex-1">
               <img
-                src="/neaz-ahmed-portrait.webp"
-                alt="Engr. Neaz Ahmed smiling while speaking on the phone"
+                src={content.profile.secondImage}
+                alt={`${content.profile.name} — portrait`}
                 width={1536}
                 height={1024}
                 loading="lazy"
@@ -445,25 +441,15 @@ function Index() {
           </div>
 
           <div className="lg:col-span-7 reveal">
-            <p className="text-[17px] leading-[1.75] text-ink/85">
-              Engr. Neaz Ahmed is a seasoned polymer expert specialising in polyolefin materials — polyethylene (PE) and
-              polypropylene (PP) — with extensive hands-on experience in polymerization techniques, material stabilization
-              and degradation studies. His practice bridges academic research and industrial practice, helping companies
-              improve product performance, processing efficiency and long-term material reliability.
-            </p>
+            <p className="text-[17px] leading-[1.75] text-ink/85">{content.profile.introduction}</p>
 
-            <p className="mt-6 text-[15px] leading-[1.85] text-ink/70">
-              Formally trained in mechanical engineering at N.E.D. University and King Fahd University of Petroleum and
-              Minerals, his career has spanned research assistantships, industrial R&amp;D, and senior consulting engagements
-              across the Gulf and beyond. He is bilingual in Urdu, English and Bengali — capable of handling bilateral technical
-              engagements at a national level.
-            </p>
+            <p className="mt-6 text-[15px] leading-[1.85] text-ink/70">{content.profile.background}</p>
 
             <div className="mt-10 grid sm:grid-cols-3 gap-4">
               {[
-                { k: "Languages", v: "Urdu · English · Bengali" },
-                { k: "Base", v: "Middle East & South Asia" },
-                { k: "Practice", v: "Independent Consultancy" },
+                { k: "Languages", v: content.profile.languages },
+                { k: "Base", v: content.profile.region },
+                { k: "Practice", v: content.profile.practice },
               ].map((x) => (
                 <div key={x.k} className="border-t border-border pt-4">
                   <div className="eyebrow">{x.k}</div>
@@ -667,24 +653,7 @@ function Index() {
           <div className="global-practice-art">
             <img src="/global-practice-cutout.webp" alt="Matte blue desktop globe on a brushed metal stand" width={1254} height={1254} loading="lazy" decoding="async" />
             <div className="globe-flags reveal" role="group" aria-label="Countries of practice — illustrative globe pins">
-              {[
-                { name: "Germany", code: "de", x: 48, y: 24 },
-                { name: "UAE", code: "ae", x: 66, y: 43 },
-                { name: "USA", code: "us", x: 20, y: 35 },
-                { name: "Saudi Arabia", code: "sa", x: 53, y: 48 },
-                { name: "Spain", code: "es", x: 33, y: 32 },
-                { name: "China", code: "cn", x: 77, y: 32 },
-                { name: "Switzerland", code: "ch", x: 43, y: 37 },
-                { name: "Bahrain", code: "bh", x: 60, y: 30 },
-                { name: "Italy", code: "it", x: 38, y: 49 },
-                { name: "Greece", code: "gr", x: 46, y: 59 },
-                { name: "Turkey", code: "tr", x: 70, y: 57 },
-                { name: "Qatar", code: "qa", x: 60, y: 64 },
-                { name: "UK", code: "gb", x: 29, y: 20 },
-                { name: "Belgium", code: "be", x: 38, y: 17 },
-                { name: "France", code: "fr", x: 24, y: 49 },
-                { name: "Singapore", code: "sg", x: 80, y: 47 },
-              ].map((country, index) => (
+              {content.countries.map((country, index) => (
                 <button key={country.code} type="button" className="globe-flag" aria-label={country.name}
                   style={{ left: `${country.x}%`, top: `${country.y}%`, animationDelay: `${index * 240}ms` }}>
                   <span className="globe-pin-head"><img src={`https://flagcdn.com/w80/${country.code}.png`} alt="" width={28} height={20} loading="lazy" /></span>
@@ -698,24 +667,7 @@ function Index() {
             <h3>International perspective.<br /><span>Local understanding.</span></h3>
             <p className="globe-hint">Explore our countries of practice. Hover over or tap a flag.</p>
             <ul className="global-practice-countries">
-              {[
-                { name: "Germany", code: "de" },
-                { name: "UAE", code: "ae" },
-                { name: "USA", code: "us" },
-                { name: "Saudi Arabia", code: "sa" },
-                { name: "Spain", code: "es" },
-                { name: "China", code: "cn" },
-                { name: "Switzerland", code: "ch" },
-                { name: "Bahrain", code: "bh" },
-                { name: "Italy", code: "it" },
-                { name: "Greece", code: "gr" },
-                { name: "Turkey", code: "tr" },
-                { name: "Qatar", code: "qa" },
-                { name: "UK", code: "gb" },
-                { name: "Belgium", code: "be" },
-                { name: "France", code: "fr" },
-                { name: "Singapore", code: "sg" },
-              ].map((country) => (
+              {content.countries.map((country) => (
                 <li key={country.code}>
                   <img src={`https://flagcdn.com/w80/${country.code}.png`} alt="" width={32} height={24} loading="lazy" />
                   <span>{country.name}</span>
@@ -831,15 +783,15 @@ function Index() {
           <div className="lg:col-span-5 reveal space-y-8">
             <div>
               <div className="eyebrow">Consultancy</div>
-              <div className="mt-2 font-display text-2xl text-ink">Zainab Polymer Consulting Services</div>
-              <div className="text-[13px] text-ink/60">Engr. Neaz Ahmed · Principal Consultant</div>
+              <div className="mt-2 font-display text-2xl text-ink">{content.contact.company}</div>
+              <div className="text-[13px] text-ink/60">{content.profile.name} · {content.profile.role}</div>
             </div>
             {[
-              { k: "Email", v: "consult@zainabpolymer.com" },
-              { k: "Phone", v: "Available upon request" },
-              { k: "Base", v: "Bahria Town, Karachi, Pakistan · Serving clients globally" },
-              { k: "LinkedIn", v: "Available upon request" },
-              { k: "Business Hours", v: "Mon – Sat · 9:00 – 18:00 (PKT)" },
+              { k: "Email", v: content.contact.email },
+              { k: "Phone", v: content.contact.phone },
+              { k: "Base", v: `${content.contact.location} · Serving clients globally` },
+              { k: "LinkedIn", v: content.contact.linkedIn || "Available upon request" },
+              { k: "Business Hours", v: content.contact.hours },
             ].map((r) => (
               <div key={r.k} className="border-t border-border pt-4">
                 <div className="eyebrow">{r.k}</div>
@@ -848,17 +800,17 @@ function Index() {
             ))}
             <div className="overflow-hidden bg-mist border border-border">
               <iframe
-                title="Map of Bahria Town, Karachi, Pakistan"
-                src="https://www.google.com/maps?q=Bahria+Town+Karachi+Pakistan&z=13&output=embed"
+                title={`Map of ${content.contact.location}`}
+                src={`https://www.google.com/maps?q=${encodeURIComponent(content.contact.location)}&z=13&output=embed`}
                 className="block aspect-[4/3] sm:aspect-[16/9] w-full border-0"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 allowFullScreen
               />
               <div className="border-t border-border bg-white p-4">
-                <div className="text-[14px] font-medium text-navy-deep">Bahria Town, Karachi</div>
+                <div className="text-[14px] font-medium text-navy-deep">{content.contact.location}</div>
                 <a
-                  href="https://www.google.com/maps/search/?api=1&query=Bahria+Town+Karachi+Pakistan"
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(content.contact.location)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-2 inline-flex items-center gap-2 text-[13px] text-steel hover:text-navy-deep focus-visible:outline-2 focus-visible:outline-offset-4"
@@ -903,11 +855,10 @@ function Index() {
           <div className="md:col-span-2">
             <a href="#top" aria-label="Zainab Polymer Consulting Services — home" className="inline-flex flex-col items-start gap-4 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4">
               <BrandLogo prominent />
-              <span className="font-display text-white text-lg">Zainab Polymer Consulting Services</span>
+              <span className="font-display text-white text-lg">{content.contact.company}</span>
             </a>
             <p className="mt-5 max-w-md text-[13.5px] leading-[1.8]">
-              Independent consulting practice in polyolefin technology, polymer science and plastics manufacturing —
-              led by Engr. Neaz Ahmed.
+              {content.contact.footer}
             </p>
           </div>
           <div>
@@ -930,10 +881,10 @@ function Index() {
         </div>
         <div className="border-t border-white/10">
           <div className="container-x py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[12px] text-white/50">
-            <div>© {new Date().getFullYear()} Zainab Polymer Consulting Services. All rights reserved.</div>
+            <div>© {new Date().getFullYear()} {content.contact.company}. All rights reserved.</div>
             <div className="flex items-center gap-5">
-              <a href="#" className="hover:text-white">LinkedIn</a>
-              <a href="#" className="hover:text-white">Email</a>
+              {content.contact.linkedIn && <a href={content.contact.linkedIn} className="hover:text-white">LinkedIn</a>}
+              <a href={`mailto:${content.contact.email}`} className="hover:text-white">Email</a>
               <a href="#top" className="hover:text-white">Back to top ↑</a>
             </div>
           </div>
