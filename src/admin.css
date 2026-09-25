@@ -459,6 +459,12 @@
 .editor-item {
   padding: 0;
 }
+.editor-credential-item {
+  margin-bottom: 12px;
+  border: 1px solid #e1e7ef;
+  border-radius: 6px;
+  background: #fbfcfe;
+}
 .editor-item summary {
   display: flex;
   align-items: center;

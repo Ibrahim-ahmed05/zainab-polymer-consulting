@@ -2,6 +2,46 @@ import { z } from "zod";
 
 const text = z.string().trim().min(1, "Please fill in this field.").max(4000);
 const short = text.max(200);
+const credentialItemSchema = z.object({ t: short, org: short, note: short });
+export const defaultCredentials = {
+  heading: "Professional Affiliations & High-Value Academic Honors.",
+  membershipsTitle: "Professional Memberships",
+  academicTitle: "Academic Distinctions & Scholarships",
+  memberships: [
+    {
+      t: "Life Member",
+      org: "Pakistan Engineering Council",
+      note: "Chartered professional standing",
+    },
+    {
+      t: "Member",
+      org: "Saudi Council of Engineers",
+      note: "Registered engineering practitioner — KSA",
+    },
+  ],
+  academic: [
+    {
+      t: "Research Assistantship",
+      org: "M.S., King Fahd University of Petroleum and Minerals",
+      note: "Awarded on academic merit",
+    },
+    {
+      t: "University Scholarship",
+      org: "B.E., N.E.D. University of Engineering & Technology",
+      note: "Undergraduate merit award",
+    },
+    {
+      t: "Government of Pakistan Scholarship",
+      org: "Higher Secondary",
+      note: "National merit scholarship",
+    },
+    {
+      t: "Merit Scholarship",
+      org: "Comilla Zila School",
+      note: "Early-career academic distinction",
+    },
+  ],
+};
 const image = z
   .string()
   .max(2000)
@@ -73,6 +113,15 @@ export const contentSchema = z.object({
     .min(1)
     .max(100),
   principles: z.array(z.object({ t: short, d: text })).length(7),
+  credentials: z
+    .object({
+      heading: short,
+      membershipsTitle: short,
+      academicTitle: short,
+      memberships: z.array(credentialItemSchema).min(1).max(30),
+      academic: z.array(credentialItemSchema).min(1).max(30),
+    })
+    .default(defaultCredentials),
 });
 export type SiteContent = z.infer<typeof contentSchema>;
 

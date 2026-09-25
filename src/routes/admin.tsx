@@ -4,6 +4,7 @@ import {
   ArrowDown,
   ArrowUp,
   ArrowUpRight,
+  Award,
   Check,
   ChevronRight,
   Eye,
@@ -88,6 +89,12 @@ const sections = [
     label: "Our principles",
     icon: ShieldCheck,
     description: "Explain the values behind your consulting practice.",
+  },
+  {
+    id: "credentials",
+    label: "Credentials & honors",
+    icon: Award,
+    description: "Update professional memberships, scholarships, and academic distinctions.",
   },
   {
     id: "contact",
@@ -511,6 +518,71 @@ function Workspace() {
     setContent({ ...content, [group]: rows });
     setNotice("");
   }
+  function updateCredentials(key: "heading" | "membershipsTitle" | "academicTitle", value: string) {
+    setContent(
+      (current) => current && { ...current, credentials: { ...current.credentials, [key]: value } },
+    );
+    setNotice("");
+  }
+  function changeCredential(
+    group: "memberships" | "academic",
+    index: number,
+    key: "t" | "org" | "note",
+    value: string,
+  ) {
+    setContent(
+      (current) =>
+        current && {
+          ...current,
+          credentials: {
+            ...current.credentials,
+            [group]: current.credentials[group].map((row, i) =>
+              i === index ? { ...row, [key]: value } : row,
+            ),
+          },
+        },
+    );
+    setNotice("");
+  }
+  function removeCredential(group: "memberships" | "academic", index: number) {
+    if (
+      !content ||
+      content.credentials[group].length <= 1 ||
+      !window.confirm(
+        "Remove this credential from the draft? It will remain live until you publish.",
+      )
+    )
+      return;
+    setContent({
+      ...content,
+      credentials: {
+        ...content.credentials,
+        [group]: content.credentials[group].filter((_, i) => i !== index),
+      },
+    });
+    setNotice("");
+  }
+  function moveCredential(group: "memberships" | "academic", index: number, direction: number) {
+    if (!content) return;
+    const rows = [...content.credentials[group]];
+    [rows[index], rows[index + direction]] = [rows[index + direction], rows[index]];
+    setContent({ ...content, credentials: { ...content.credentials, [group]: rows } });
+    setNotice("");
+  }
+  function addCredential(group: "memberships" | "academic") {
+    if (!content || content.credentials[group].length >= 30) return;
+    setContent({
+      ...content,
+      credentials: {
+        ...content.credentials,
+        [group]: [
+          ...content.credentials[group],
+          { t: "New credential", org: "Organisation", note: "Details" },
+        ],
+      },
+    });
+    setNotice("");
+  }
   async function save(andPublish = false) {
     if (!content) return;
     setBusy(true);
@@ -581,6 +653,86 @@ function Workspace() {
           onClick={() => removeRow(group, index)}
         >
           <Trash2 size={15} /> Remove
+        </button>
+      </div>
+    );
+  }
+  function credentialEditor(
+    group: "memberships" | "academic",
+    titleKey: "membershipsTitle" | "academicTitle",
+    label: string,
+  ) {
+    const rows = content!.credentials[group];
+    return (
+      <div className="editor-card">
+        <h2>{label}</h2>
+        <Field
+          label="Category title"
+          value={content!.credentials[titleKey]}
+          onChange={(value) => updateCredentials(titleKey, value)}
+        />
+        {rows.map((row, index) => (
+          <details className="editor-item editor-credential-item" key={`${group}-${index}`}>
+            <summary>
+              <span className="editor-item-number">{String(index + 1).padStart(2, "0")}</span>
+              <span>
+                {row.t || "New credential"}
+                <small>{row.org}</small>
+              </span>
+              <ChevronRight size={18} />
+            </summary>
+            <div className="editor-item-body">
+              <Field
+                label="Credential or award"
+                value={row.t}
+                onChange={(value) => changeCredential(group, index, "t", value)}
+              />
+              <Field
+                label="Organisation or institution"
+                value={row.org}
+                onChange={(value) => changeCredential(group, index, "org", value)}
+              />
+              <Field
+                label="Supporting note"
+                value={row.note}
+                onChange={(value) => changeCredential(group, index, "note", value)}
+              />
+              <div className="editor-row-tools">
+                <button
+                  type="button"
+                  aria-label={`Move credential ${index + 1} up`}
+                  disabled={index === 0}
+                  onClick={() => moveCredential(group, index, -1)}
+                >
+                  <ArrowUp size={16} />
+                </button>
+                <button
+                  type="button"
+                  aria-label={`Move credential ${index + 1} down`}
+                  disabled={index === rows.length - 1}
+                  onClick={() => moveCredential(group, index, 1)}
+                >
+                  <ArrowDown size={16} />
+                </button>
+                <button
+                  type="button"
+                  className="editor-remove"
+                  disabled={rows.length <= 1}
+                  onClick={() => removeCredential(group, index)}
+                >
+                  <Trash2 size={15} /> Remove
+                </button>
+              </div>
+            </div>
+          </details>
+        ))}
+        <button
+          className="editor-button editor-add"
+          type="button"
+          disabled={rows.length >= 30}
+          onClick={() => addCredential(group)}
+        >
+          <Plus size={18} /> Add {group === "memberships" ? "membership" : "academic honor"}
         </button>
       </div>
     );
@@ -1082,6 +1234,20 @@ function Workspace() {
                     />
                   </div>
                 ))}
+              </>
+            )}
+            {section === "credentials" && (
+              <>
+                <div className="editor-card">
+                  <h2>Credentials section heading</h2>
+                  <Field
+                    label="Section heading"
+                    value={content.credentials.heading}
+                    onChange={(value) => updateCredentials("heading", value)}
+                  />
+                </div>
+                {credentialEditor("memberships", "membershipsTitle", "Professional memberships")}
+                {credentialEditor("academic", "academicTitle", "Academic honors")}
               </>
             )}
             {section === "contact" && (

@@ -9,6 +9,8 @@ import { defaultContent } from "../src/lib/default-content.ts";
 import { validateContent } from "../src/lib/content-schema.ts";
 
 validateContent(defaultContent);
+const { credentials: omittedCredentials, ...legacyContent } = defaultContent;
+assert.deepEqual(validateContent(legacyContent).credentials, omittedCredentials);
 assert.throws(() =>
   validateContent({
     ...defaultContent,
@@ -255,6 +257,9 @@ try {
   await nav.getByRole("button", { name: "Career timeline", exact: true }).click();
   await page.locator(".editor-item summary").first().click();
   await page.getByLabel("Dates", { exact: true }).first().fill("1980–1985");
+  await nav.getByRole("button", { name: "Credentials & honors", exact: true }).click();
+  await page.locator(".editor-credential-item summary").first().click();
+  await page.getByLabel("Credential or award", { exact: true }).first().fill("Senior Life Member");
   await nav.getByRole("button", { name: "Contact details", exact: true }).click();
   await page.getByLabel("Email address", { exact: true }).fill("invalid-email");
   await page.getByRole("button", { name: "Save draft", exact: true }).click();
@@ -265,6 +270,7 @@ try {
   await expect(page.getByRole("status")).toContainText("Draft saved");
   assert.equal(draft.timeline[0].y, "1980–1985");
   assert.equal(draft.countries.length, 17);
+  assert.equal(draft.credentials.memberships[0].t, "Senior Life Member");
   console.log("PASS: country additions, timeline edits, field validation, contact saving.");
 
   await nav.getByRole("button", { name: "Website photos", exact: true }).click();
@@ -296,6 +302,7 @@ try {
       "Overview",
       "Contact details",
       "Countries of practice",
+      "Credentials & honors",
       "Website photos",
     ]) {
       await nav.getByRole("button", { name: label, exact: true }).click();

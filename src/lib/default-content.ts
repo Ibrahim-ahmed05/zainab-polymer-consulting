@@ -1,4 +1,4 @@
-import type { SiteContent } from "./content-schema";
+import { defaultCredentials, type SiteContent } from "./content-schema.ts";
 export const defaultContent: SiteContent = {
   version: 1,
   home: {
@@ -154,6 +154,7 @@ export const defaultContent: SiteContent = {
       d: "Continuous participation in the world's leading polymer conferences.",
     },
   ],
+  credentials: defaultCredentials,
   countries: [
     { name: "Germany", code: "de", x: 48, y: 24 },
     { name: "UAE", code: "ae", x: 66, y: 43 },

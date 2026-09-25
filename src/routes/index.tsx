@@ -1,7 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BrandLogo } from "@/components/BrandLogo";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Award, Beaker, Cog, GraduationCap, Lightbulb, X, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ArrowUpRight,
+  Award,
+  Beaker,
+  Cog,
+  GraduationCap,
+  Lightbulb,
+  X,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import heroPlant from "@/assets/hero-plant.webp";
 import pellets from "@/assets/pellets.webp";
 import lab from "@/assets/lab.webp";
@@ -57,7 +67,15 @@ function useScrolled(threshold = 40) {
   return scrolled;
 }
 
-function Counter({ to, suffix = "", duration = 1600 }: { to: number; suffix?: string; duration?: number }) {
+function Counter({
+  to,
+  suffix = "",
+  duration = 1600,
+}: {
+  to: number;
+  suffix?: string;
+  duration?: number;
+}) {
   const [n, setN] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   useEffect(() => {
@@ -65,26 +83,40 @@ function Counter({ to, suffix = "", duration = 1600 }: { to: number; suffix?: st
     if (!el) return;
     let started = false;
     let frame = 0;
-    const io = new IntersectionObserver((entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting && !started) {
-          started = true;
-          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setN(to); return; }
-          const start = performance.now();
-          const tick = (t: number) => {
-            const p = Math.min(1, (t - start) / duration);
-            const eased = 1 - Math.pow(1 - p, 3);
-            setN(Math.round(to * eased));
-            if (p < 1) frame = requestAnimationFrame(tick);
-          };
-          frame = requestAnimationFrame(tick);
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting && !started) {
+            started = true;
+            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+              setN(to);
+              return;
+            }
+            const start = performance.now();
+            const tick = (t: number) => {
+              const p = Math.min(1, (t - start) / duration);
+              const eased = 1 - Math.pow(1 - p, 3);
+              setN(Math.round(to * eased));
+              if (p < 1) frame = requestAnimationFrame(tick);
+            };
+            frame = requestAnimationFrame(tick);
+          }
         }
-      }
-    }, { threshold: 0.5 });
+      },
+      { threshold: 0.5 },
+    );
     io.observe(el);
-    return () => { io.disconnect(); cancelAnimationFrame(frame); };
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(frame);
+    };
   }, [to, duration]);
-  return <span ref={ref}>{n}{suffix}</span>;
+  return (
+    <span ref={ref}>
+      {n}
+      {suffix}
+    </span>
+  );
 }
 
 /* ----------------------------- data ----------------------------- */
@@ -106,11 +138,26 @@ const EXPERTISE_PILLARS = [
     summary: "Structure, formulation, and performance from molecular scale to commercial resin.",
     icon: Beaker,
     items: [
-      { t: "Polymer Science", d: "Structure–property correlation, morphology, and performance analysis across PE and PP systems." },
-      { t: "Polyolefin Technology", d: "PE and PP synthesis, copolymer design, and process optimization from lab to plant." },
-      { t: "Polymerization", d: "Reaction design, kinetics, and scale-up support from bench to commercial production." },
-      { t: "Catalyst Selection", d: "Ziegler-Natta and metallocene systems tailored to product architecture and throughput." },
-      { t: "Material Formulation", d: "Compound and blend engineering for targeted mechanical and processing outcomes." },
+      {
+        t: "Polymer Science",
+        d: "Structure–property correlation, morphology, and performance analysis across PE and PP systems.",
+      },
+      {
+        t: "Polyolefin Technology",
+        d: "PE and PP synthesis, copolymer design, and process optimization from lab to plant.",
+      },
+      {
+        t: "Polymerization",
+        d: "Reaction design, kinetics, and scale-up support from bench to commercial production.",
+      },
+      {
+        t: "Catalyst Selection",
+        d: "Ziegler-Natta and metallocene systems tailored to product architecture and throughput.",
+      },
+      {
+        t: "Material Formulation",
+        d: "Compound and blend engineering for targeted mechanical and processing outcomes.",
+      },
     ],
   },
   {
@@ -119,11 +166,26 @@ const EXPERTISE_PILLARS = [
     summary: "Plant-floor optimization across molding, extrusion, and equipment selection.",
     icon: Cog,
     items: [
-      { t: "Stabilization", d: "Antioxidant packages, UV protection, and tailored formulations for demanding service life." },
-      { t: "Degradation Analysis", d: "Thermal, photo-oxidative, and mechanical degradation studies with lifetime prediction." },
-      { t: "Injection Molding", d: "Process optimization, defect analysis, mold design guidance, and cycle refinement." },
-      { t: "Extrusion", d: "Profile, film, and pipe extrusion troubleshooting, screw design and process scaling." },
-      { t: "Machine Selection", d: "Objective specification and cost–profit modelling for capital equipment decisions." },
+      {
+        t: "Stabilization",
+        d: "Antioxidant packages, UV protection, and tailored formulations for demanding service life.",
+      },
+      {
+        t: "Degradation Analysis",
+        d: "Thermal, photo-oxidative, and mechanical degradation studies with lifetime prediction.",
+      },
+      {
+        t: "Injection Molding",
+        d: "Process optimization, defect analysis, mold design guidance, and cycle refinement.",
+      },
+      {
+        t: "Extrusion",
+        d: "Profile, film, and pipe extrusion troubleshooting, screw design and process scaling.",
+      },
+      {
+        t: "Machine Selection",
+        d: "Objective specification and cost–profit modelling for capital equipment decisions.",
+      },
     ],
   },
   {
@@ -132,10 +194,22 @@ const EXPERTISE_PILLARS = [
     summary: "End-to-end product development, failure investigation, and knowledge transfer.",
     icon: Lightbulb,
     items: [
-      { t: "Product Development", d: "End-to-end development from resin selection through prototype validation." },
-      { t: "Failure Analysis", d: "Root-cause investigation of field failures backed by laboratory evidence." },
-      { t: "Training & Workshops", d: "Structured programs for engineering teams on polymer processing and reliability." },
-      { t: "Scale-up Support", d: "De-risked transition from R&D trials to steady-state commercial operation." },
+      {
+        t: "Product Development",
+        d: "End-to-end development from resin selection through prototype validation.",
+      },
+      {
+        t: "Failure Analysis",
+        d: "Root-cause investigation of field failures backed by laboratory evidence.",
+      },
+      {
+        t: "Training & Workshops",
+        d: "Structured programs for engineering teams on polymer processing and reliability.",
+      },
+      {
+        t: "Scale-up Support",
+        d: "De-risked transition from R&D trials to steady-state commercial operation.",
+      },
     ],
   },
 ] as const;
@@ -148,37 +222,49 @@ const INDUSTRIES = [
   { t: "Consumer Goods", img: pellets },
   { t: "Agricultural Products", img: hero(heroPlant) },
 ];
-function hero(x: string) { return x; }
-
-
-
-
+function hero(x: string) {
+  return x;
+}
 
 const CONFERENCES = [
   { y: "2015", items: ["Arabplast, Dubai — UAE"] },
-  { y: "2014", items: ["US/Global Biocides Regulation Conference, Washington — USA", "Driving Business Through Research & Innovation, Dubai — UAE", "Chinaplas, Shanghai — China"] },
-  { y: "2013", items: ["Arabplast, Dubai — UAE", "K-Show, Düsseldorf — Germany", "Mediplas, Birmingham — UK"] },
-  { y: "2012", items: ["Chinaplas, Shanghai — China", "Flexible Packaging Middle East, Dubai — UAE"] },
-  { y: "2011", items: ["Arabplast Summit, Dubai — UAE", "Middle East Plastic Pipe, Dubai — UAE", "EUROTECH / Equiplast, Barcelona — Spain", "GPCA Spring Conference, Abu Dhabi — UAE", "Plastic Packaging, Riyadh — Saudi Arabia"] },
+  {
+    y: "2014",
+    items: [
+      "US/Global Biocides Regulation Conference, Washington — USA",
+      "Driving Business Through Research & Innovation, Dubai — UAE",
+      "Chinaplas, Shanghai — China",
+    ],
+  },
+  {
+    y: "2013",
+    items: ["Arabplast, Dubai — UAE", "K-Show, Düsseldorf — Germany", "Mediplas, Birmingham — UK"],
+  },
+  {
+    y: "2012",
+    items: ["Chinaplas, Shanghai — China", "Flexible Packaging Middle East, Dubai — UAE"],
+  },
+  {
+    y: "2011",
+    items: [
+      "Arabplast Summit, Dubai — UAE",
+      "Middle East Plastic Pipe, Dubai — UAE",
+      "EUROTECH / Equiplast, Barcelona — Spain",
+      "GPCA Spring Conference, Abu Dhabi — UAE",
+      "Plastic Packaging, Riyadh — Saudi Arabia",
+    ],
+  },
   { y: "2010", items: ["Chinaplas, Shanghai — China", "Polyolefin Additives, Cologne — Germany"] },
   { y: "2009", items: ["Arabplast, Dubai — UAE", "PEPP, Zurich — Switzerland"] },
-  { y: "2008", items: ["Multilayer Packaging Film, Cologne — Germany", "Polyolefin Thermoplastics: Advances and Innovations, Dhahran — Saudi Arabia"] },
+  {
+    y: "2008",
+    items: [
+      "Multilayer Packaging Film, Cologne — Germany",
+      "Polyolefin Thermoplastics: Advances and Innovations, Dhahran — Saudi Arabia",
+    ],
+  },
   { y: "2007", items: ["K-Show, Düsseldorf — Germany", "Chemindix, Manama — Bahrain"] },
 ];
-
-const HONORS_MEMBERSHIPS = [
-  { t: "Life Member", org: "Pakistan Engineering Council", note: "Chartered professional standing" },
-  { t: "Member", org: "Saudi Council of Engineers", note: "Registered engineering practitioner — KSA" },
-];
-
-const HONORS_ACADEMIC = [
-  { t: "Research Assistantship", org: "M.S., King Fahd University of Petroleum and Minerals", note: "Awarded on academic merit" },
-  { t: "University Scholarship", org: "B.E., N.E.D. University of Engineering & Technology", note: "Undergraduate merit award" },
-  { t: "Government of Pakistan Scholarship", org: "Higher Secondary", note: "National merit scholarship" },
-  { t: "Merit Scholarship", org: "Comilla Zila School", note: "Early-career academic distinction" },
-];
-
-
 
 const TECH_LIBRARY = [
   {
@@ -245,9 +331,18 @@ function Index() {
   const published = Route.useLoaderData();
   const [preview, setPreview] = useState<SiteContent | null>(null);
   useEffect(() => {
-    if (window.parent === window || new URLSearchParams(window.location.search).get("preview") !== "1") return;
+    if (
+      window.parent === window ||
+      new URLSearchParams(window.location.search).get("preview") !== "1"
+    )
+      return;
     const receive = (event: MessageEvent) => {
-      if (event.origin !== window.location.origin || event.source !== window.parent || event.data?.type !== "site-preview") return;
+      if (
+        event.origin !== window.location.origin ||
+        event.source !== window.parent ||
+        event.data?.type !== "site-preview"
+      )
+        return;
       const parsed = contentSchema.safeParse(event.data.content);
       if (parsed.success) setPreview(parsed.data);
     };
@@ -270,7 +365,8 @@ export function Website({ content }: { content: SiteContent }) {
   const diagramTouchStart = useRef<number | null>(null);
   const diagrams = TECH_LIBRARY.filter((item) => techTab === "all" || item.category === techTab);
   const activeDiagram = diagrams[diagramIndex % diagrams.length];
-  const moveDiagram = (direction: number) => setDiagramIndex((current) => (current + direction + diagrams.length) % diagrams.length);
+  const moveDiagram = (direction: number) =>
+    setDiagramIndex((current) => (current + direction + diagrams.length) % diagrams.length);
   const [selectedImgIdx, setSelectedImgIdx] = useState<number | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const isViewerOpen = selectedImgIdx !== null;
@@ -280,7 +376,10 @@ export function Website({ content }: { content: SiteContent }) {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     dialogRef.current?.focus();
-    return () => { document.body.style.overflow = previousOverflow; previousFocus?.focus({ preventScroll: true }); };
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      previousFocus?.focus({ preventScroll: true });
+    };
   }, [isViewerOpen]);
 
   const nextImg = () => {
@@ -318,9 +417,18 @@ export function Website({ content }: { content: SiteContent }) {
         }
       >
         <div className="container-x site-header-inner flex items-center justify-between">
-          <a href="#top" aria-label="Zainab Polymer Consulting Services — home" className="flex shrink-0 items-center gap-3 group rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4">
+          <a
+            href="#top"
+            aria-label="Zainab Polymer Consulting Services — home"
+            className="flex shrink-0 items-center gap-3 group rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4"
+          >
             <BrandLogo />
-            <span className={"flex flex-col leading-none transition-colors duration-500 " + (scrolled ? "text-navy-deep" : "text-white")}>
+            <span
+              className={
+                "flex flex-col leading-none transition-colors duration-500 " +
+                (scrolled ? "text-navy-deep" : "text-white")
+              }
+            >
               <span className="navbar-brand-name">Zainab</span>
               <span className="navbar-brand-descriptor">Polymer Consulting</span>
             </span>
@@ -361,20 +469,40 @@ export function Website({ content }: { content: SiteContent }) {
             aria-expanded={open}
             aria-controls="mobile-navigation"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
               <path d="M4 7h16M4 12h16M4 17h16" />
             </svg>
           </button>
         </div>
         {open && (
-          <div id="mobile-navigation" className="xl:hidden bg-white border-t border-border max-h-[calc(100svh-104px)] overflow-y-auto" data-lenis-prevent>
+          <div
+            id="mobile-navigation"
+            className="xl:hidden bg-white border-t border-border max-h-[calc(100svh-104px)] overflow-y-auto"
+            data-lenis-prevent
+          >
             <div className="container-x py-4 flex flex-col gap-3">
               {NAV.map((n) => (
-                <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="py-2 text-[14px] text-ink/80">
+                <a
+                  key={n.id}
+                  href={`#${n.id}`}
+                  onClick={() => setOpen(false)}
+                  className="py-2 text-[14px] text-ink/80"
+                >
                   {n.label}
                 </a>
               ))}
-              <a href="#contact" onClick={() => setOpen(false)} className="mt-2 bg-navy-deep text-white px-5 py-3 text-[12px] tracking-[0.15em] uppercase text-center">
+              <a
+                href="#contact"
+                onClick={() => setOpen(false)}
+                className="mt-2 bg-navy-deep text-white px-5 py-3 text-[12px] tracking-[0.15em] uppercase text-center"
+              >
                 Schedule Consultation
               </a>
             </div>
@@ -384,17 +512,26 @@ export function Website({ content }: { content: SiteContent }) {
 
       {/* HERO */}
       <section id="top" className="consulting-hero">
-        <img src={content.home.image} alt="Blue and clear polymer pellets spilling from a glass vessel" className="consulting-hero__image" fetchPriority="high" />
+        <img
+          src={content.home.image}
+          alt="Blue and clear polymer pellets spilling from a glass vessel"
+          className="consulting-hero__image"
+          fetchPriority="high"
+        />
         <div className="consulting-hero__shade" />
         <div className="container-x consulting-hero__inner">
           <div className="consulting-hero__copy">
-            <h1 className="consulting-hero__title">{content.home.title} <span>{content.home.accent}</span></h1>
-            <p className="consulting-hero__description">
-              {content.home.description}
-            </p>
+            <h1 className="consulting-hero__title">
+              {content.home.title} <span>{content.home.accent}</span>
+            </h1>
+            <p className="consulting-hero__description">{content.home.description}</p>
             <div className="consulting-hero__actions">
-              <a href="#contact" className="consulting-hero__primary">Book a Consultation <span aria-hidden="true">→</span></a>
-              <a href="#expertise" className="consulting-hero__secondary">Explore Expertise <span aria-hidden="true">↗</span></a>
+              <a href="#contact" className="consulting-hero__primary">
+                Book a Consultation <span aria-hidden="true">→</span>
+              </a>
+              <a href="#expertise" className="consulting-hero__secondary">
+                Explore Expertise <span aria-hidden="true">↗</span>
+              </a>
             </div>
             <div className="consulting-hero__stats">
               {[
@@ -404,26 +541,43 @@ export function Website({ content }: { content: SiteContent }) {
                 { n: content.countries.length, s: "", l: "Countries of practice" },
               ].map((k) => (
                 <div key={k.l} className="consulting-hero__stat">
-                  <div className="consulting-hero__number"><Counter to={k.n} suffix={k.s} /></div>
+                  <div className="consulting-hero__number">
+                    <Counter to={k.n} suffix={k.s} />
+                  </div>
                   <div className="consulting-hero__label">{k.l}</div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="consulting-hero__annotation" aria-hidden="true">Science<br />Industry<br />A better tomorrow</div>
-
+          <div className="consulting-hero__annotation" aria-hidden="true">
+            Science
+            <br />
+            Industry
+            <br />A better tomorrow
+          </div>
         </div>
       </section>
       {/* ABOUT */}
-      <Section id="about" eyebrow="01 — Profile" title="Bridging Scientific Polymer Research & Industrial Practice.">
+      <Section
+        id="about"
+        eyebrow="01 — Profile"
+        title="Bridging Scientific Polymer Research & Industrial Practice."
+      >
         <div className="grid lg:grid-cols-12 gap-14 items-start">
           <div className="lg:col-span-5 reveal flex flex-col gap-6 lg:self-stretch">
             <div className="image-zoom relative aspect-[4/5] shrink-0 bg-mist">
-              <img src={content.profile.image} alt={content.profile.name} className="h-full w-full object-cover" loading="lazy" />
+              <img
+                src={content.profile.image}
+                alt={content.profile.name}
+                className="h-full w-full object-cover"
+                loading="lazy"
+              />
               <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-navy-deep/90 to-transparent">
                 <div className="text-white">
                   <div className="font-display text-xl">{content.profile.name}</div>
-                  <div className="text-[11px] tracking-[0.22em] uppercase text-white/70 mt-1">{content.profile.role}</div>
+                  <div className="text-[11px] tracking-[0.22em] uppercase text-white/70 mt-1">
+                    {content.profile.role}
+                  </div>
                 </div>
               </div>
             </div>
@@ -443,7 +597,9 @@ export function Website({ content }: { content: SiteContent }) {
           <div className="lg:col-span-7 reveal">
             <p className="text-[17px] leading-[1.75] text-ink/85">{content.profile.introduction}</p>
 
-            <p className="mt-6 text-[15px] leading-[1.85] text-ink/70">{content.profile.background}</p>
+            <p className="mt-6 text-[15px] leading-[1.85] text-ink/70">
+              {content.profile.background}
+            </p>
 
             <div className="mt-10 grid sm:grid-cols-3 gap-4">
               {[
@@ -477,19 +633,34 @@ export function Website({ content }: { content: SiteContent }) {
       </Section>
 
       {/* EXPERTISE */}
-      <Section id="expertise" muted eyebrow="02 — Technical Specialization" title="Deep Engineering Competency Across the Polyolefin Value Chain.">
+      <Section
+        id="expertise"
+        muted
+        eyebrow="02 — Technical Specialization"
+        title="Deep Engineering Competency Across the Polyolefin Value Chain."
+      >
         <ExpertiseSection />
       </Section>
 
       {/* INDUSTRIES */}
-      <Section id="industries" eyebrow="03 — Industrial Sectors" title="Strategic Technical Advisory Across Primary Plastic Industries.">
+      <Section
+        id="industries"
+        eyebrow="03 — Industrial Sectors"
+        title="Strategic Technical Advisory Across Primary Plastic Industries."
+      >
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {INDUSTRIES.map((i, idx) => (
-            <div key={i.t} className="reveal image-zoom relative aspect-[4/5] group cursor-pointer" style={{ transitionDelay: `${(idx % 3) * 80}ms` }}>
+            <div
+              key={i.t}
+              className="reveal image-zoom relative aspect-[4/5] group cursor-pointer"
+              style={{ transitionDelay: `${(idx % 3) * 80}ms` }}
+            >
               <img src={i.img} alt={i.t} className="h-full w-full object-cover" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/95 via-navy-deep/30 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                <div className="text-[11px] tracking-[0.25em] uppercase text-white/60">Industry {String(idx + 1).padStart(2, "0")}</div>
+                <div className="text-[11px] tracking-[0.25em] uppercase text-white/60">
+                  Industry {String(idx + 1).padStart(2, "0")}
+                </div>
                 <div className="mt-2 font-display text-2xl">{i.t}</div>
                 <div className="mt-3 h-px w-8 bg-gold transition-all duration-500 group-hover:w-16" />
               </div>
@@ -499,19 +670,41 @@ export function Website({ content }: { content: SiteContent }) {
       </Section>
 
       {/* MANUFACTURING EXPERTISE / CASE */}
-      <Section id="manufacturing" eyebrow="04 — Manufacturing & Process" title="Optimizing Injection Molding, Extrusion, & Machine Dynamics." muted>
+      <Section
+        id="manufacturing"
+        eyebrow="04 — Manufacturing & Process"
+        title="Optimizing Injection Molding, Extrusion, & Machine Dynamics."
+        muted
+      >
         {/* Full-width horizontal images */}
         <div className="grid md:grid-cols-2 gap-6 lg:gap-8 mb-16">
           <div className="image-zoom relative aspect-[16/10] bg-mist border border-border shadow-sm reveal">
-            <img src={engel} alt="Engineers observing an ENGEL injection molding machine" className="w-full h-full object-cover" loading="lazy" />
+            <img
+              src={engel}
+              alt="Engineers observing an ENGEL injection molding machine"
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
             <div className="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-navy-deep/80 to-transparent">
-              <span className="text-[11px] tracking-[0.25em] uppercase font-semibold text-white/90">Converting & Molding Machinery</span>
+              <span className="text-[11px] tracking-[0.25em] uppercase font-semibold text-white/90">
+                Converting & Molding Machinery
+              </span>
             </div>
           </div>
-          <div className="image-zoom relative aspect-[16/10] bg-mist border border-border shadow-sm reveal" style={{ transitionDelay: '100ms' }}>
-            <img src={image1} alt="Process optimization parameters" className="w-full h-full object-cover" loading="lazy" />
+          <div
+            className="image-zoom relative aspect-[16/10] bg-mist border border-border shadow-sm reveal"
+            style={{ transitionDelay: "100ms" }}
+          >
+            <img
+              src={image1}
+              alt="Process optimization parameters"
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
             <div className="absolute bottom-0 inset-x-0 p-5 bg-gradient-to-t from-navy-deep/80 to-transparent">
-              <span className="text-[11px] tracking-[0.25em] uppercase font-semibold text-white/90">Process Parameters & Diagnostics</span>
+              <span className="text-[11px] tracking-[0.25em] uppercase font-semibold text-white/90">
+                Process Parameters & Diagnostics
+              </span>
             </div>
           </div>
         </div>
@@ -523,23 +716,29 @@ export function Website({ content }: { content: SiteContent }) {
               Injection molding, extrusion and machine troubleshooting.
             </h3>
             <p className="mt-8 text-[16px] leading-[1.85] text-ink/70">
-              From ENGEL injection molding lines to profile, film and pipe extrusion trains — our engagements deliver
-              measurable improvements in defect rates, cycle time, and energy consumption without compromising the
-              performance of the finished product.
+              From ENGEL injection molding lines to profile, film and pipe extrusion trains — our
+              engagements deliver measurable improvements in defect rates, cycle time, and energy
+              consumption without compromising the performance of the finished product.
             </p>
           </div>
           <div className="lg:col-span-5 reveal">
             <div className="border border-border p-5 sm:p-8 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.02)]">
               <div className="eyebrow mb-4">Case in brief — Small-Box PP Trial</div>
               <p className="text-[14px] text-ink/70 leading-relaxed">
-                Revised barrel-zone temperatures on a PP small-box trial (Z1–Z5: 205 · 220 · 235 · 240 · 240 °C) reduced
-                energy consumption without affecting the performance or quality of the final products.
+                Revised barrel-zone temperatures on a PP small-box trial (Z1–Z5: 205 · 220 · 235 ·
+                240 · 240 °C) reduced energy consumption without affecting the performance or
+                quality of the final products.
               </p>
               <div className="mt-6 grid grid-cols-5 gap-1 sm:gap-2" data-temperature-zones>
                 {[205, 220, 235, 240, 240].map((v, i) => (
-                  <div key={i} className="min-w-0 border border-border px-1 py-3 text-center bg-mist/30">
+                  <div
+                    key={i}
+                    className="min-w-0 border border-border px-1 py-3 text-center bg-mist/30"
+                  >
                     <div className="eyebrow text-[10px]">Z{i + 1}</div>
-                    <div className="mt-1 whitespace-nowrap font-display text-base sm:text-lg font-medium text-navy-deep tabular-nums">{v}°</div>
+                    <div className="mt-1 whitespace-nowrap font-display text-base sm:text-lg font-medium text-navy-deep tabular-nums">
+                      {v}°
+                    </div>
                   </div>
                 ))}
               </div>
@@ -548,61 +747,170 @@ export function Website({ content }: { content: SiteContent }) {
         </div>
       </Section>
 
-      <Section id="technology" muted eyebrow="05 — Technical Diagrams" title="Scientific Models & Process Engineering Library.">
-        <p className="library-intro">An interactive catalog of the process schematics, crystallization kinetics, molecular distributions, and orientation matrices we actively leverage during client engagements.</p>
+      <Section
+        id="technology"
+        muted
+        eyebrow="05 — Technical Diagrams"
+        title="Scientific Models & Process Engineering Library."
+      >
+        <p className="library-intro">
+          An interactive catalog of the process schematics, crystallization kinetics, molecular
+          distributions, and orientation matrices we actively leverage during client engagements.
+        </p>
         <div className="library-filters" role="group" aria-label="Filter technical diagrams">
-          {([{ id: "all", label: "All Diagrams" }, { id: "science", label: "Material & Polymer Science" }, { id: "process", label: "Process & Converting" }] as const).map(tab => (
-            <button key={tab.id} type="button" className="library-filter" aria-pressed={techTab === tab.id} aria-controls="technical-library-grid" onClick={() => { setTechTab(tab.id); setDiagramIndex(0); }}>{tab.label}</button>
+          {(
+            [
+              { id: "all", label: "All Diagrams" },
+              { id: "science", label: "Material & Polymer Science" },
+              { id: "process", label: "Process & Converting" },
+            ] as const
+          ).map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              className="library-filter"
+              aria-pressed={techTab === tab.id}
+              aria-controls="technical-library-grid"
+              onClick={() => {
+                setTechTab(tab.id);
+                setDiagramIndex(0);
+              }}
+            >
+              {tab.label}
+            </button>
           ))}
         </div>
-        <div id="technical-library-grid" className="diagram-carousel" role="region" aria-roledescription="carousel" aria-label="Technical diagrams"
-          onKeyDown={event => { if (event.key === "ArrowRight" || event.key === "ArrowLeft") { event.preventDefault(); moveDiagram(event.key === "ArrowRight" ? 1 : -1); } }}
-          onTouchStart={event => { diagramTouchStart.current = event.touches[0].clientX; }}
-          onTouchEnd={event => { if (diagramTouchStart.current !== null) { const distance = event.changedTouches[0].clientX - diagramTouchStart.current; if (Math.abs(distance) > 60) moveDiagram(distance < 0 ? 1 : -1); } diagramTouchStart.current = null; }}>
-          <article className="diagram-slide" aria-roledescription="slide" aria-label={`${diagramIndex + 1} of ${diagrams.length}`}>
-            <button type="button" className="library-preview" aria-label={`Expand View: ${activeDiagram.title}`} onClick={() => setSelectedImgIdx(TECH_LIBRARY.findIndex(item => item.id === activeDiagram.id))}>
-              <img src={activeDiagram.img} alt={activeDiagram.title} loading="lazy" decoding="async" />
-              <span className="library-expand">Expand View <ArrowUpRight size={15} aria-hidden="true" /></span>
+        <div
+          id="technical-library-grid"
+          className="diagram-carousel"
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="Technical diagrams"
+          onKeyDown={(event) => {
+            if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+              event.preventDefault();
+              moveDiagram(event.key === "ArrowRight" ? 1 : -1);
+            }
+          }}
+          onTouchStart={(event) => {
+            diagramTouchStart.current = event.touches[0].clientX;
+          }}
+          onTouchEnd={(event) => {
+            if (diagramTouchStart.current !== null) {
+              const distance = event.changedTouches[0].clientX - diagramTouchStart.current;
+              if (Math.abs(distance) > 60) moveDiagram(distance < 0 ? 1 : -1);
+            }
+            diagramTouchStart.current = null;
+          }}
+        >
+          <article
+            className="diagram-slide"
+            aria-roledescription="slide"
+            aria-label={`${diagramIndex + 1} of ${diagrams.length}`}
+          >
+            <button
+              type="button"
+              className="library-preview"
+              aria-label={`Expand View: ${activeDiagram.title}`}
+              onClick={() =>
+                setSelectedImgIdx(TECH_LIBRARY.findIndex((item) => item.id === activeDiagram.id))
+              }
+            >
+              <img
+                src={activeDiagram.img}
+                alt={activeDiagram.title}
+                loading="lazy"
+                decoding="async"
+              />
+              <span className="library-expand">
+                Expand View <ArrowUpRight size={15} aria-hidden="true" />
+              </span>
             </button>
             <div className="library-caption" aria-live="polite" aria-atomic="true">
-              <div className="library-meta"><span>{activeDiagram.num}</span><span>{activeDiagram.category}</span></div>
-              <h3>{activeDiagram.title}</h3><p>{activeDiagram.desc}</p>
+              <div className="library-meta">
+                <span>{activeDiagram.num}</span>
+                <span>{activeDiagram.category}</span>
+              </div>
+              <h3>{activeDiagram.title}</h3>
+              <p>{activeDiagram.desc}</p>
             </div>
           </article>
           <div className="diagram-controls">
-            <div className="diagram-dots" aria-label="Choose a diagram">{diagrams.map((item, index) => <button key={item.id} type="button" aria-label={`Show ${item.title}`} aria-current={index === diagramIndex ? "true" : undefined} onClick={() => setDiagramIndex(index)}><span /></button>)}</div>
-            <div className="diagram-pagination"><span className="diagram-position">{String(diagramIndex + 1).padStart(2, "0")} / {String(diagrams.length).padStart(2, "0")}</span><button type="button" aria-label="Previous diagram" onClick={() => moveDiagram(-1)}><ChevronLeft size={20} /></button><button type="button" aria-label="Next diagram" onClick={() => moveDiagram(1)}><ChevronRight size={20} /></button></div>
+            <div className="diagram-dots" aria-label="Choose a diagram">
+              {diagrams.map((item, index) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  aria-label={`Show ${item.title}`}
+                  aria-current={index === diagramIndex ? "true" : undefined}
+                  onClick={() => setDiagramIndex(index)}
+                >
+                  <span />
+                </button>
+              ))}
+            </div>
+            <div className="diagram-pagination">
+              <span className="diagram-position">
+                {String(diagramIndex + 1).padStart(2, "0")} /{" "}
+                {String(diagrams.length).padStart(2, "0")}
+              </span>
+              <button type="button" aria-label="Previous diagram" onClick={() => moveDiagram(-1)}>
+                <ChevronLeft size={20} />
+              </button>
+              <button type="button" aria-label="Next diagram" onClick={() => moveDiagram(1)}>
+                <ChevronRight size={20} />
+              </button>
+            </div>
           </div>
         </div>
       </Section>
       {/* ENERGY MEASUREMENT */}
-      <Section id="energy" eyebrow="06 — Energy Profiling" title="Empirical Telemetry: Translating Electrical Load Into Efficiency.">
+      <Section
+        id="energy"
+        eyebrow="06 — Energy Profiling"
+        title="Empirical Telemetry: Translating Electrical Load Into Efficiency."
+      >
         <div className="energy-overview">
           <BrandLogo prominent />
           <p className="energy-description">
-            We instrument production lines to profile real electrical demand — line by line, phase by phase. The output
-            becomes the basis for objective decisions on set-points, machine selection and process re-design.
+            We instrument production lines to profile real electrical demand — line by line, phase
+            by phase. The output becomes the basis for objective decisions on set-points, machine
+            selection and process re-design.
           </p>
           <div className="energy-metrics">
             <Stat k="Duration" v="~20 min" />
             <Stat k="Start" v="0.283 kWh" />
             <Stat k="End" v="11.419 kWh" />
-            <div className="energy-total"><div className="font-display text-4xl text-navy-deep tabular-nums">11.136</div><div className="eyebrow mt-2">kWh consumed</div></div>
+            <div className="energy-total">
+              <div className="font-display text-4xl text-navy-deep tabular-nums">11.136</div>
+              <div className="eyebrow mt-2">kWh consumed</div>
+            </div>
           </div>
         </div>
         <div className="energy-visuals">
           <div className="energy-telemetry">
             <div className="eyebrow mb-5 text-steel">Telemetry Setup</div>
-            <img src={image2} alt="Energy measurement telemetry setup" className="w-full aspect-[16/9] object-contain" loading="lazy" />
+            <img
+              src={image2}
+              alt="Energy measurement telemetry setup"
+              className="w-full aspect-[16/9] object-contain"
+              loading="lazy"
+            />
             <p className="mt-5 text-[12px] leading-relaxed text-ink/60">
-              Logging real-time motor current draw and heating band duty cycles during operational extrusion trials.
+              Logging real-time motor current draw and heating band duty cycles during operational
+              extrusion trials.
             </p>
           </div>
           <EnergyChart />
         </div>
       </Section>
       {/* PUBLICATIONS */}
-      <Section id="publications" eyebrow="07 — Publications" title="Peer-Reviewed Research Papers, Patents, and Technical Articles." muted>
+      <Section
+        id="publications"
+        eyebrow="07 — Publications"
+        title="Peer-Reviewed Research Papers, Patents, and Technical Articles."
+        muted
+      >
         <div className="border-t border-border">
           {PUBLICATIONS.map((p, i) => (
             <a
@@ -620,27 +928,50 @@ export function Website({ content }: { content: SiteContent }) {
                 </h4>
                 <p className="mt-2 text-[13px] text-ink/60">{p.authors}</p>
               </div>
-              <div className="col-span-12 md:col-span-3 text-[12.5px] text-steel md:text-right">{p.where}</div>
+              <div className="col-span-12 md:col-span-3 text-[12.5px] text-steel md:text-right">
+                {p.where}
+              </div>
             </a>
           ))}
         </div>
       </Section>
 
       {/* CONFERENCES */}
-      <Section id="conferences" dark eyebrow="08 — Global Engagement" title="Continuous Academic & Technical Presence Across Four Continents.">
+      <Section
+        id="conferences"
+        dark
+        eyebrow="08 — Global Engagement"
+        title="Continuous Academic & Technical Presence Across Four Continents."
+      >
         <div className="relative">
           <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-white/15" />
           <ol className="space-y-14">
             {CONFERENCES.map((c, i) => (
               <li key={c.y} className="relative grid md:grid-cols-2 gap-6 md:gap-16 reveal">
                 <span className="absolute left-4 md:left-1/2 -translate-x-1/2 top-2 h-3 w-3 rounded-full bg-gold ring-4 ring-navy-deep" />
-                <div className={"pl-12 md:pl-0 " + (i % 2 ? "md:text-left md:pl-16 md:order-2" : "md:text-right md:pr-16 md:order-1")}>
-                  <div className="font-display text-5xl md:text-6xl text-white/90 tabular-nums">{c.y}</div>
+                <div
+                  className={
+                    "pl-12 md:pl-0 " +
+                    (i % 2
+                      ? "md:text-left md:pl-16 md:order-2"
+                      : "md:text-right md:pr-16 md:order-1")
+                  }
+                >
+                  <div className="font-display text-5xl md:text-6xl text-white/90 tabular-nums">
+                    {c.y}
+                  </div>
                 </div>
-                <div className={"pl-12 md:pl-0 " + (i % 2 ? "md:pr-16 md:text-right md:order-1" : "md:pl-16 md:order-2")}>
+                <div
+                  className={
+                    "pl-12 md:pl-0 " +
+                    (i % 2 ? "md:pr-16 md:text-right md:order-1" : "md:pl-16 md:order-2")
+                  }
+                >
                   <ul className="space-y-3">
                     {c.items.map((it) => (
-                      <li key={it} className="text-[14px] text-white/75 leading-relaxed">{it}</li>
+                      <li key={it} className="text-[14px] text-white/75 leading-relaxed">
+                        {it}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -651,12 +982,40 @@ export function Website({ content }: { content: SiteContent }) {
 
         <div className="global-practice">
           <div className="global-practice-art">
-            <img src="/global-practice-cutout.webp" alt="Matte blue desktop globe on a brushed metal stand" width={1254} height={1254} loading="lazy" decoding="async" />
-            <div className="globe-flags reveal" role="group" aria-label="Countries of practice — illustrative globe pins">
+            <img
+              src="/global-practice-cutout.webp"
+              alt="Matte blue desktop globe on a brushed metal stand"
+              width={1254}
+              height={1254}
+              loading="lazy"
+              decoding="async"
+            />
+            <div
+              className="globe-flags reveal"
+              role="group"
+              aria-label="Countries of practice — illustrative globe pins"
+            >
               {content.countries.map((country, index) => (
-                <button key={country.code} type="button" className="globe-flag" aria-label={country.name}
-                  style={{ left: `${country.x}%`, top: `${country.y}%`, animationDelay: `${index * 240}ms` }}>
-                  <span className="globe-pin-head"><img src={`https://flagcdn.com/w80/${country.code}.png`} alt="" width={28} height={20} loading="lazy" /></span>
+                <button
+                  key={country.code}
+                  type="button"
+                  className="globe-flag"
+                  aria-label={country.name}
+                  style={{
+                    left: `${country.x}%`,
+                    top: `${country.y}%`,
+                    animationDelay: `${index * 240}ms`,
+                  }}
+                >
+                  <span className="globe-pin-head">
+                    <img
+                      src={`https://flagcdn.com/w80/${country.code}.png`}
+                      alt=""
+                      width={28}
+                      height={20}
+                      loading="lazy"
+                    />
+                  </span>
                   <span className="globe-country-name">{country.name}</span>
                 </button>
               ))}
@@ -664,12 +1023,24 @@ export function Website({ content }: { content: SiteContent }) {
           </div>
           <div className="global-practice-content">
             <div className="global-practice-eyebrow">Countries of Practice</div>
-            <h3>International perspective.<br /><span>Local understanding.</span></h3>
-            <p className="globe-hint">Explore our countries of practice. Hover over or tap a flag.</p>
+            <h3>
+              International perspective.
+              <br />
+              <span>Local understanding.</span>
+            </h3>
+            <p className="globe-hint">
+              Explore our countries of practice. Hover over or tap a flag.
+            </p>
             <ul className="global-practice-countries">
               {content.countries.map((country) => (
                 <li key={country.code}>
-                  <img src={`https://flagcdn.com/w80/${country.code}.png`} alt="" width={32} height={24} loading="lazy" />
+                  <img
+                    src={`https://flagcdn.com/w80/${country.code}.png`}
+                    alt=""
+                    width={32}
+                    height={24}
+                    loading="lazy"
+                  />
                   <span>{country.name}</span>
                 </li>
               ))}
@@ -679,30 +1050,50 @@ export function Website({ content }: { content: SiteContent }) {
       </Section>
 
       {/* WHY US */}
-      <section id="why" className="advisory-section section-spacing" aria-labelledby="advisory-title">
+      <section
+        id="why"
+        className="advisory-section section-spacing"
+        aria-labelledby="advisory-title"
+      >
         <div className="container-x">
           <div className="advisory-heading">
             <div className="advisory-eyebrow">09 — Advisory Principles</div>
             <div className="advisory-heading-copy">
-              <h2 id="advisory-title" className="font-display">The foundations of a<br className="hidden md:block" /> <span>trusted technical partnership.</span></h2>
-              <p>Scientific thinking. Industrial understanding. A considered approach to every polymer challenge.</p>
+              <h2 id="advisory-title" className="font-display">
+                The foundations of a<br className="hidden md:block" />{" "}
+                <span>trusted technical partnership.</span>
+              </h2>
+              <p>
+                Scientific thinking. Industrial understanding. A considered approach to every
+                polymer challenge.
+              </p>
             </div>
           </div>
           <div className="advisory-layout">
             <article className="advisory-foundation">
-              <div className="advisory-foundation-top"><span>01 / Our foundation</span><Beaker size={26} strokeWidth={1.3} aria-hidden="true" /></div>
+              <div className="advisory-foundation-top">
+                <span>01 / Our foundation</span>
+                <Beaker size={26} strokeWidth={1.3} aria-hidden="true" />
+              </div>
               <div className="advisory-foundation-copy">
                 <span className="advisory-rule" aria-hidden="true" />
                 <h3 className="font-display">{WHY[0].t}</h3>
                 <p>{WHY[0].d}</p>
               </div>
-              <div className="advisory-foundation-note">Evidence-led thinking.<br />Practical, informed decisions.</div>
+              <div className="advisory-foundation-note">
+                Evidence-led thinking.
+                <br />
+                Practical, informed decisions.
+              </div>
             </article>
             <div className="advisory-principles">
               {WHY.slice(1).map((w, i) => (
                 <article key={w.t} className="advisory-principle">
                   <span className="advisory-number">{String(i + 2).padStart(2, "0")}</span>
-                  <div><h3 className="font-display">{w.t}</h3><p>{w.d}</p></div>
+                  <div>
+                    <h3 className="font-display">{w.t}</h3>
+                    <p>{w.d}</p>
+                  </div>
                 </article>
               ))}
             </div>
@@ -711,11 +1102,19 @@ export function Website({ content }: { content: SiteContent }) {
       </section>
 
       {/* HONORS */}
-      <Section id="honors" eyebrow="10 — Credentials" title="Professional Affiliations & High-Value Academic Honors.">
+      <Section id="honors" eyebrow="10 — Credentials" title={content.credentials.heading}>
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-14">
           {[
-            { icon: Award, label: "Professional Memberships", items: HONORS_MEMBERSHIPS },
-            { icon: GraduationCap, label: "Academic Distinctions & Scholarships", items: HONORS_ACADEMIC },
+            {
+              icon: Award,
+              label: content.credentials.membershipsTitle,
+              items: content.credentials.memberships,
+            },
+            {
+              icon: GraduationCap,
+              label: content.credentials.academicTitle,
+              items: content.credentials.academic,
+            },
           ].map((group) => {
             const Icon = group.icon;
             return (
@@ -726,12 +1125,17 @@ export function Website({ content }: { content: SiteContent }) {
                   </span>
                   <div>
                     <div className="eyebrow">Category</div>
-                    <div className="font-display text-xl text-ink leading-tight mt-1">{group.label}</div>
+                    <div className="font-display text-xl text-ink leading-tight mt-1">
+                      {group.label}
+                    </div>
                   </div>
                 </div>
                 <ul className="mt-2 divide-y divide-border">
                   {group.items.map((it) => (
-                    <li key={it.t + it.org} className="group grid grid-cols-12 gap-4 py-5 hover:bg-mist/50 transition-colors px-1 -mx-1">
+                    <li
+                      key={it.t + it.org}
+                      className="group grid grid-cols-12 gap-4 py-5 hover:bg-mist/50 transition-colors px-1 -mx-1"
+                    >
                       <div className="col-span-1 pt-1">
                         <span className="block h-2 w-2 rounded-full bg-gold ring-4 ring-gold/10" />
                       </div>
@@ -740,7 +1144,9 @@ export function Website({ content }: { content: SiteContent }) {
                           {it.t}
                         </div>
                         <div className="mt-1 text-[13.5px] text-ink/70">{it.org}</div>
-                        <div className="mt-1 text-[11.5px] tracking-[0.16em] uppercase text-steel">{it.note}</div>
+                        <div className="mt-1 text-[11.5px] tracking-[0.16em] uppercase text-steel">
+                          {it.note}
+                        </div>
                       </div>
                     </li>
                   ))}
@@ -761,15 +1167,20 @@ export function Website({ content }: { content: SiteContent }) {
           <div className="lg:col-span-8 reveal">
             <div className="eyebrow text-white/60 mb-6">Ready to engage</div>
             <h2 className="font-display text-4xl md:text-6xl font-semibold leading-[1.15] tracking-tight text-balance">
-              Need <span className="keyword-accent keyword-accent--dark">expert guidance</span> for your polymer manufacturing process?
+              Need <span className="keyword-accent keyword-accent--dark">expert guidance</span> for
+              your polymer manufacturing process?
             </h2>
             <p className="mt-8 max-w-2xl text-[16px] leading-[1.8] text-white/70">
-              Whether you're optimising production, improving material performance, troubleshooting manufacturing issues,
-              or developing new polymer solutions — we provide research-driven consultancy tailored to your objectives.
+              Whether you're optimising production, improving material performance, troubleshooting
+              manufacturing issues, or developing new polymer solutions — we provide research-driven
+              consultancy tailored to your objectives.
             </p>
           </div>
           <div className="lg:col-span-4 reveal lg:justify-self-end">
-            <a href="#contact" className="inline-flex items-center gap-3 bg-white text-navy-deep px-10 py-5 text-[12px] tracking-[0.22em] uppercase font-medium hover:bg-mist transition-all">
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-3 bg-white text-navy-deep px-10 py-5 text-[12px] tracking-[0.22em] uppercase font-medium hover:bg-mist transition-all"
+            >
               Book Consultation
               <span>→</span>
             </a>
@@ -778,13 +1189,19 @@ export function Website({ content }: { content: SiteContent }) {
       </section>
 
       {/* CONTACT */}
-      <Section id="contact" eyebrow="11 — Consultation" title="Initiate a Secure, High-Value Engagement.">
+      <Section
+        id="contact"
+        eyebrow="11 — Consultation"
+        title="Initiate a Secure, High-Value Engagement."
+      >
         <div className="grid lg:grid-cols-12 gap-14">
           <div className="lg:col-span-5 reveal space-y-8">
             <div>
               <div className="eyebrow">Consultancy</div>
               <div className="mt-2 font-display text-2xl text-ink">{content.contact.company}</div>
-              <div className="text-[13px] text-ink/60">{content.profile.name} · {content.profile.role}</div>
+              <div className="text-[13px] text-ink/60">
+                {content.profile.name} · {content.profile.role}
+              </div>
             </div>
             {[
               { k: "Email", v: content.contact.email },
@@ -808,7 +1225,9 @@ export function Website({ content }: { content: SiteContent }) {
                 allowFullScreen
               />
               <div className="border-t border-border bg-white p-4">
-                <div className="text-[14px] font-medium text-navy-deep">{content.contact.location}</div>
+                <div className="text-[14px] font-medium text-navy-deep">
+                  {content.contact.location}
+                </div>
                 <a
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(content.contact.location)}`}
                   target="_blank"
@@ -823,7 +1242,10 @@ export function Website({ content }: { content: SiteContent }) {
 
           <form
             className="consultation-form lg:col-span-7 reveal p-6 sm:p-8 md:p-12"
-            onSubmit={(e) => { e.preventDefault(); alert("Thank you. We will respond within one business day."); }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              alert("Thank you. We will respond within one business day.");
+            }}
           >
             <div className="eyebrow">Request a consultation</div>
             <h3 className="mt-2 font-display text-3xl text-ink">Tell us about your project.</h3>
@@ -835,13 +1257,24 @@ export function Website({ content }: { content: SiteContent }) {
               <Field label="Country" name="country" />
             </div>
             <div className="mt-6">
-              <Field label="Area of interest" name="topic" placeholder="e.g. HDPE stabilization, extrusion troubleshooting" />
+              <Field
+                label="Area of interest"
+                name="topic"
+                placeholder="e.g. HDPE stabilization, extrusion troubleshooting"
+              />
             </div>
             <div className="mt-6">
               <label className="eyebrow block mb-3">Project brief</label>
-              <textarea name="brief" rows={5} className="w-full bg-transparent border-b border-border focus:border-navy-deep py-3 text-[15px] text-ink outline-none transition-colors" />
+              <textarea
+                name="brief"
+                rows={5}
+                className="w-full bg-transparent border-b border-border focus:border-navy-deep py-3 text-[15px] text-ink outline-none transition-colors"
+              />
             </div>
-            <button type="submit" className="mt-10 inline-flex items-center gap-3 bg-navy-deep text-white px-10 py-4 text-[12px] tracking-[0.22em] uppercase font-medium hover:bg-ink transition-all">
+            <button
+              type="submit"
+              className="mt-10 inline-flex items-center gap-3 bg-navy-deep text-white px-10 py-4 text-[12px] tracking-[0.22em] uppercase font-medium hover:bg-ink transition-all"
+            >
               Send Enquiry
               <span>→</span>
             </button>
@@ -853,18 +1286,26 @@ export function Website({ content }: { content: SiteContent }) {
       <footer className="bg-ink text-white/70">
         <div className="container-x py-16 grid md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
-            <a href="#top" aria-label="Zainab Polymer Consulting Services — home" className="inline-flex flex-col items-start gap-4 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4">
+            <a
+              href="#top"
+              aria-label="Zainab Polymer Consulting Services — home"
+              className="inline-flex flex-col items-start gap-4 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4"
+            >
               <BrandLogo prominent />
               <span className="font-display text-white text-lg">{content.contact.company}</span>
             </a>
-            <p className="mt-5 max-w-md text-[13.5px] leading-[1.8]">
-              {content.contact.footer}
-            </p>
+            <p className="mt-5 max-w-md text-[13.5px] leading-[1.8]">{content.contact.footer}</p>
           </div>
           <div>
             <div className="eyebrow text-white/50">Quick Links</div>
             <ul className="mt-5 space-y-2 text-[13.5px]">
-              {NAV.map((n) => <li key={n.id}><a href={`#${n.id}`} className="hover:text-white transition-colors">{n.label}</a></li>)}
+              {NAV.map((n) => (
+                <li key={n.id}>
+                  <a href={`#${n.id}`} className="hover:text-white transition-colors">
+                    {n.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
           <div>
@@ -881,11 +1322,21 @@ export function Website({ content }: { content: SiteContent }) {
         </div>
         <div className="border-t border-white/10">
           <div className="container-x py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[12px] text-white/50">
-            <div>© {new Date().getFullYear()} {content.contact.company}. All rights reserved.</div>
+            <div>
+              © {new Date().getFullYear()} {content.contact.company}. All rights reserved.
+            </div>
             <div className="flex items-center gap-5">
-              {content.contact.linkedIn && <a href={content.contact.linkedIn} className="hover:text-white">LinkedIn</a>}
-              <a href={`mailto:${content.contact.email}`} className="hover:text-white">Email</a>
-              <a href="#top" className="hover:text-white">Back to top ↑</a>
+              {content.contact.linkedIn && (
+                <a href={content.contact.linkedIn} className="hover:text-white">
+                  LinkedIn
+                </a>
+              )}
+              <a href={`mailto:${content.contact.email}`} className="hover:text-white">
+                Email
+              </a>
+              <a href="#top" className="hover:text-white">
+                Back to top ↑
+              </a>
             </div>
           </div>
         </div>
@@ -893,16 +1344,32 @@ export function Website({ content }: { content: SiteContent }) {
 
       {/* LIGHTBOX MODAL */}
       {selectedImgIdx !== null && (
-        <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Technical diagram viewer" tabIndex={-1} data-lenis-prevent
+        <div
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Technical diagram viewer"
+          tabIndex={-1}
+          data-lenis-prevent
           onKeyDown={(event) => {
             if (event.key !== "Tab") return;
             const buttons = dialogRef.current?.querySelectorAll<HTMLButtonElement>("button");
             if (!buttons?.length) return;
-            const first = buttons[0], last = buttons[buttons.length - 1];
-            if (event.shiftKey && (document.activeElement === first || document.activeElement === dialogRef.current)) { event.preventDefault(); last.focus(); }
-            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+            const first = buttons[0],
+              last = buttons[buttons.length - 1];
+            if (
+              event.shiftKey &&
+              (document.activeElement === first || document.activeElement === dialogRef.current)
+            ) {
+              event.preventDefault();
+              last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+              event.preventDefault();
+              first.focus();
+            }
           }}
-          className="fixed inset-0 z-[100] flex flex-col justify-between overflow-y-auto bg-navy-deep/98 text-white p-4 md:p-8">
+          className="fixed inset-0 z-[100] flex flex-col justify-between overflow-y-auto bg-navy-deep/98 text-white p-4 md:p-8"
+        >
           {/* Top Bar */}
           <div className="flex items-center justify-between border-b border-white/10 pb-4">
             <div>
@@ -956,7 +1423,10 @@ export function Website({ content }: { content: SiteContent }) {
           <div className="border-t border-white/10 pt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-[13px] text-white/70">
             <p className="max-w-2xl leading-relaxed">{TECH_LIBRARY[selectedImgIdx].desc}</p>
             <div className="text-[11px] tracking-wider uppercase text-white/40 select-none">
-              Use <kbd className="border border-white/20 px-1.5 py-0.5 bg-white/5">←</kbd> / <kbd className="border border-white/20 px-1.5 py-0.5 bg-white/5">→</kbd> keys to navigate · <kbd className="border border-white/20 px-1.5 py-0.5 bg-white/5">Esc</kbd> to close
+              Use <kbd className="border border-white/20 px-1.5 py-0.5 bg-white/5">←</kbd> /{" "}
+              <kbd className="border border-white/20 px-1.5 py-0.5 bg-white/5">→</kbd> keys to
+              navigate · <kbd className="border border-white/20 px-1.5 py-0.5 bg-white/5">Esc</kbd>{" "}
+              to close
             </div>
           </div>
         </div>
@@ -982,14 +1452,19 @@ function ExpertiseSection() {
             {pillar.items.map((item, itemIdx) => (
               <div key={item.t} className="practice-service">
                 <span className="practice-index">{String(itemIdx + 1).padStart(2, "0")}</span>
-                <div><h4>{item.t}</h4><p>{item.d}</p></div>
+                <div>
+                  <h4>{item.t}</h4>
+                  <p>{item.d}</p>
+                </div>
               </div>
             ))}
             {pillar.id === "advisory" && (
               <a href="#contact" className="practice-custom">
                 <span className="practice-kicker">Custom scope</span>
                 <p>Every engagement is tailored to your product and process.</p>
-                <span className="practice-link">Start a conversation <ArrowUpRight size={16} aria-hidden="true" /></span>
+                <span className="practice-link">
+                  Start a conversation <ArrowUpRight size={16} aria-hidden="true" />
+                </span>
               </a>
             )}
           </div>
@@ -998,9 +1473,14 @@ function ExpertiseSection() {
       <div className="practice-outro">
         <div>
           <p className="practice-outro-title">Fourteen disciplines. One integrated practice.</p>
-          <p className="practice-outro-description">Engagements are scoped to your product, process, and commercial objectives — from single-issue troubleshooting to full program support.</p>
+          <p className="practice-outro-description">
+            Engagements are scoped to your product, process, and commercial objectives — from
+            single-issue troubleshooting to full program support.
+          </p>
         </div>
-        <a href="#contact" className="practice-button">Discuss your challenge <ArrowUpRight size={18} aria-hidden="true" /></a>
+        <a href="#contact" className="practice-button">
+          Discuss your challenge <ArrowUpRight size={18} aria-hidden="true" />
+        </a>
       </div>
     </div>
   );
@@ -1023,12 +1503,30 @@ function SectionTitle({ title, id, dark }: { title: string; id: string; dark?: b
   const keyword = SECTION_KEYWORDS[id];
   const start = keyword ? title.indexOf(keyword) : -1;
   if (start < 0) return <>{title}</>;
-  return <>{title.slice(0, start)}<span className={"keyword-accent" + (dark ? " keyword-accent--dark" : "")}>{keyword}</span>{title.slice(start + keyword.length)}</>;
+  return (
+    <>
+      {title.slice(0, start)}
+      <span className={"keyword-accent" + (dark ? " keyword-accent--dark" : "")}>{keyword}</span>
+      {title.slice(start + keyword.length)}
+    </>
+  );
 }
 
 function Section({
-  id, eyebrow: eye, title, children, dark, muted,
-}: { id: string; eyebrow: string; title: string; children: React.ReactNode; dark?: boolean; muted?: boolean }) {
+  id,
+  eyebrow: eye,
+  title,
+  children,
+  dark,
+  muted,
+}: {
+  id: string;
+  eyebrow: string;
+  title: string;
+  children: React.ReactNode;
+  dark?: boolean;
+  muted?: boolean;
+}) {
   return (
     <section
       id={id}
@@ -1042,13 +1540,23 @@ function Section({
           <div className="lg:col-span-5">
             <div className="flex items-center gap-3">
               <span className="h-[2px] w-6 bg-gold shrink-0" />
-              <div className={"text-[13px] md:text-[14px] tracking-[0.22em] uppercase font-semibold " + (dark ? "text-white/80" : "text-navy-deep")}>
+              <div
+                className={
+                  "text-[13px] md:text-[14px] tracking-[0.22em] uppercase font-semibold " +
+                  (dark ? "text-white/80" : "text-navy-deep")
+                }
+              >
                 {eye}
               </div>
             </div>
           </div>
           <div className="lg:col-span-7">
-            <h2 className={"font-display text-3xl md:text-[40px] lg:text-[46px] font-semibold leading-[1.18] tracking-tight text-balance " + (dark ? "text-white" : "text-ink")}>
+            <h2
+              className={
+                "font-display text-3xl md:text-[40px] lg:text-[46px] font-semibold leading-[1.18] tracking-tight text-balance " +
+                (dark ? "text-white" : "text-ink")
+              }
+            >
               <SectionTitle title={title} id={id} dark={dark} />
             </h2>
           </div>
@@ -1068,12 +1576,30 @@ function Stat({ k, v }: { k: string; v: string }) {
   );
 }
 
-function Field({ label, name, type = "text", required, placeholder }: { label: string; name: string; type?: string; required?: boolean; placeholder?: string }) {
+function Field({
+  label,
+  name,
+  type = "text",
+  required,
+  placeholder,
+}: {
+  label: string;
+  name: string;
+  type?: string;
+  required?: boolean;
+  placeholder?: string;
+}) {
   return (
     <div>
-      <label className="eyebrow block mb-3">{label}{required && <span className="text-gold ml-1">*</span>}</label>
+      <label className="eyebrow block mb-3">
+        {label}
+        {required && <span className="text-gold ml-1">*</span>}
+      </label>
       <input
-        type={type} name={name} required={required} placeholder={placeholder}
+        type={type}
+        name={name}
+        required={required}
+        placeholder={placeholder}
         className="w-full bg-transparent border-b border-border focus:border-navy-deep py-3 text-[15px] text-ink outline-none transition-colors placeholder:text-steel/60"
       />
     </div>
@@ -1083,11 +1609,23 @@ function Field({ label, name, type = "text", required, placeholder }: { label: s
 function EnergyChart() {
   // Sample cumulative-energy curve derived from the document (0.283 → 11.419 kWh over 20 min)
   const points = [
-    [0, 0.28], [2, 1.4], [4, 2.7], [6, 4.1], [8, 5.4],
-    [10, 6.6], [12, 7.8], [14, 8.9], [16, 9.9], [18, 10.7], [20, 11.42],
+    [0, 0.28],
+    [2, 1.4],
+    [4, 2.7],
+    [6, 4.1],
+    [8, 5.4],
+    [10, 6.6],
+    [12, 7.8],
+    [14, 8.9],
+    [16, 9.9],
+    [18, 10.7],
+    [20, 11.42],
   ] as const;
-  const W = 720, H = 340, PAD = 44;
-  const maxX = 20, maxY = 12;
+  const W = 720,
+    H = 340,
+    PAD = 44;
+  const maxX = 20,
+    maxY = 12;
   const x = (v: number) => PAD + (v / maxX) * (W - PAD * 2);
   const y = (v: number) => H - PAD - (v / maxY) * (H - PAD * 2);
   const path = points.map((p, i) => `${i ? "L" : "M"}${x(p[0])},${y(p[1])}`).join(" ");
@@ -1098,7 +1636,9 @@ function EnergyChart() {
       <div className="flex items-baseline justify-between mb-4">
         <div>
           <div className="eyebrow">Total energy — L1 connection</div>
-          <div className="font-display text-xl mt-1 text-ink">Cumulative kWh · 20-minute window</div>
+          <div className="font-display text-xl mt-1 text-ink">
+            Cumulative kWh · 20-minute window
+          </div>
         </div>
         <div className="text-[11px] tracking-[0.22em] uppercase text-steel">Sample dataset</div>
       </div>
@@ -1111,17 +1651,50 @@ function EnergyChart() {
         </defs>
         {[0, 3, 6, 9, 12].map((t) => (
           <g key={t}>
-            <line x1={PAD} x2={W - PAD} y1={y(t)} y2={y(t)} stroke="oklch(0.92 0.008 260)" strokeDasharray="2 4" />
-            <text x={8} y={y(t) + 4} fontSize="11" fill="oklch(0.45 0.02 260)">{t}</text>
+            <line
+              x1={PAD}
+              x2={W - PAD}
+              y1={y(t)}
+              y2={y(t)}
+              stroke="oklch(0.92 0.008 260)"
+              strokeDasharray="2 4"
+            />
+            <text x={8} y={y(t) + 4} fontSize="11" fill="oklch(0.45 0.02 260)">
+              {t}
+            </text>
           </g>
         ))}
         {[0, 5, 10, 15, 20].map((t) => (
-          <text key={t} x={x(t)} y={H - 16} fontSize="11" fill="oklch(0.45 0.02 260)" textAnchor="middle">{t}m</text>
+          <text
+            key={t}
+            x={x(t)}
+            y={H - 16}
+            fontSize="11"
+            fill="oklch(0.45 0.02 260)"
+            textAnchor="middle"
+          >
+            {t}m
+          </text>
         ))}
         <path d={area} fill="url(#g)" />
-        <path d={path} fill="none" stroke="oklch(0.19 0.05 260)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path
+          d={path}
+          fill="none"
+          stroke="oklch(0.19 0.05 260)"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
         {points.map((p, i) => (
-          <circle key={i} cx={x(p[0])} cy={y(p[1])} r="3" fill="white" stroke="oklch(0.19 0.05 260)" strokeWidth="1.5" />
+          <circle
+            key={i}
+            cx={x(p[0])}
+            cy={y(p[1])}
+            r="3"
+            fill="white"
+            stroke="oklch(0.19 0.05 260)"
+            strokeWidth="1.5"
+          />
         ))}
         <circle cx={x(20)} cy={y(11.42)} r="6" fill="oklch(0.76 0.11 82)" />
       </svg>

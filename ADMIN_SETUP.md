@@ -1,6 +1,6 @@
 # Set up your father's website editor
 
-The dashboard is at **`/admin`** on your website. It edits the homepage copy and numbers, profile, career timeline, countries, publications, seven principles, contact details, and three main photos. Countries automatically update the homepage count and flags. The page design, technical diagrams, conference history, credentials, and other specialist sections remain managed in code.
+The dashboard is at **`/admin`** on your website. It edits the homepage copy and numbers, profile, career timeline, countries, publications, seven principles, professional memberships, academic honors, contact details, and three main photos. Countries automatically update the homepage count and flags. The page design, technical diagrams, conference history, and other specialist sections remain managed in code.
 
 Changes follow **Edit → Save draft → Preview → Publish**. Saving a draft does not change the live website. Publish includes saving the latest changes. No Git commit or Vercel redeployment is required for subsequent content updates.
 
